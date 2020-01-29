@@ -24,36 +24,55 @@ The Command Line Interface (CLI) provides a convenient way to start a GraphQL se
 
 ## Characteristics
 
-- **Data-centric**
-  The GraphQL interface is created around the data definitions in the given OAS, not around the endpoints, leading to a natural use of GraphQL.
-
-  <img src="https://raw.githubusercontent.com/ibm/openapi-to-graphql/master/docs/data-centric.png" alt="Example of data-centric design" width="600">
-
-- **Automatic query resolution**
-  Automatically generated resolvers translate (nested) GraphQL queries to API requests. Request results are translated back to GraphQL responses.
-
+- **Queries**
+  
+  Defined headers, query, and path open api parameters become type checked parameters to the GraphQL queries.  Responses
+  get automatically generated graphql types.
 
 - **Mutations**
-  Non-safe, non-idempotent API operations (e.g., `POST`, `PUT`, `DELETE`) are translated to GraphQL [mutations](http://graphql.org/learn/queries/#mutations). Input payload is type-checked.
 
-  <img src="https://raw.githubusercontent.com/ibm/openapi-to-graphql/master/docs/mutations.png" alt="Example of mutation" width="600">
+  Non-safe, non-idempotent API operations are translated to GraphQL [mutations](http://graphql.org/learn/queries/#mutations). 
+  GraphQL Input Objects schemas are generated for the input body so that that input data is type checked.
 
 - **Authentication**
 
   All HTTP headers on the GraphQL request are passed through to the upstream API.
   
   A login mutation is provided so that allows you to store a
-  bearer token in an htpt cookie that is used in subsequent request to populate the Authorization header 
+  bearer token in an http cookie that is used in subsequent request to populate the Authorization header 
   on API  requests.  This comes in handy if your using the GraphiQL interface since you can't 
   easily set Authorization headers using that interface.  A logout mutation is also available to
   clear the cookie.
   
 - **API Sanitation**
-  Parts of an API that not compatible with GraphQL are automatically sanitized. For example, API parameters and data definition names with unsupported characters (e.g., `-`, `.`, `,`, `:`, `;`...) are removed. GraphQL queries are desanitized to correctly invoke the REST API and the responses are resanitized to create GraphQL-compliant results.
 
-  <img src="https://raw.githubusercontent.com/ibm/openapi-to-graphql/master/docs/sanitization.png" alt="Example of sanitation" width="300">
+  API names not compatible with GraphQL are automatically sanitized. For example, API parameters and data definition names with unsupported 
+  characters (e.g., `-`, `.`, `,`, `:`, `;`...) are replaced with `_`.
 
 - **Swagger and OpenAPI 3 support** OpenAPI-to-GraphQL can handle both Swagger (OpenAPI specification 2.0) as well as OpenAPI specification 3.
+
+- **Support for json objects with dynamic keys** GraphQL object types requires all fields of a type to be known, openapi
+allows json types with dynamic object keys.  In these cases, we map the object type to an array of key value pairs `[<ValueType>ResultProp!]` 
+that using this template:
+```graphql
+type <ValueType>ResultProp {
+    key String!
+    value <ValueType> 
+}
+```
+
+## License
+
+[BSD](./LICENSE)
+
+## Development
+
+* We love [pull requests](https://github.com/chirino/graphql-4-apis/pulls)
+* Is one of your APIs not working well with this project?  [Lets us know](https://github.com/chirino/graphql-4-apis/issues)
+* GraphQL-4-APIs is written in [Go](https://golang.org/).  It should work on any platform where go is supported.
+* Built on this [GraphQL](https://github.com/chirino/graphql) framework
+* Currently focused on being a CLI based server, but eventually would like to provided library to allow it to be used 
+  in your custom GraphQL servers
 
 ## Future Work
 
@@ -63,18 +82,12 @@ The Command Line Interface (CLI) provides a convenient way to start a GraphQL se
 * support subscriptions
 * allow customizing the generated GraphQL schema
 * https secured graphql endpoints 
-
-## License
-
-[BSD](./LICENSE)
-
-## Development
-
-GraphQL-4-APIs is written in [Go](https://golang.org/).  We love pull requests.
+* sanitization on json schema field names.
+* setup ci jobs and have some binary releases
 
 ## Similar projects
 
-- [openapi-to-graphql](https://github.com/IBM/openapi-to-graphql)
+- [openapi-to-graphql](https://github.com/IBM/openapi-to-graphql) Very similar to this project, written in javascript
 
 - [swagger-to-graphql](https://github.com/yarax/swagger-to-graphql) turns a given Swagger (OpenAPI Specification 2.0) into a GraphQL interface, which resolves against the original API. GraphQL schema is based on endpoints, not on data definitions. No links are considered.
 
