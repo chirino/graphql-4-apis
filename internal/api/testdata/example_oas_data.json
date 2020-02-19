@@ -1,0 +1,291 @@
+{
+  "users": {
+    "arlene": {
+      "name": "Arlene L McMahon",
+      "address": {
+        "street": "4656 Cherry Camp Road",
+        "city": "Elk Grove Village"
+      },
+      "address2": {
+        "street": "3180 Little Acres Lane",
+        "city": "Macomb"
+      },
+      "employerId": "binsol",
+      "hobbies": [
+        "tap dancing",
+        "bowling"
+      ],
+      "status": "staff",
+      "nomenclature": {
+        "suborder": "Haplorhini",
+        "family": "Hominidae",
+        "genus": "Homo",
+        "species": "sapiens"
+      },
+      "friends": [
+        "will",
+        "johnny",
+        "heather"
+      ]
+    },
+    "will": {
+      "name": "William B Ropp",
+      "address": {
+        "street": "3180 Little Acres Lane",
+        "city": "Macomb"
+      },
+      "employerId": "binsol",
+      "hobbies": [
+        "tap dancing",
+        "baseball"
+      ],
+      "status": "staff",
+      "nomenclature": {
+        "suborder": "Haplorhini",
+        "family": "Hominidae",
+        "genus": "Homo",
+        "species": "sapiens"
+      },
+      "friends": [
+        "arlene",
+        "johnny"
+      ]
+    },
+    "johnny": {
+      "name": "John C Barnes",
+      "address": {
+        "street": "372 Elk Rd Little",
+        "city": "Tucson"
+      },
+      "employerId": "binsol",
+      "hobbies": [
+        "chess",
+        "tennis"
+      ],
+      "status": "staff",
+      "nomenclature": {
+        "suborder": "Haplorhini",
+        "family": "Hominidae",
+        "genus": "Homo",
+        "species": "sapiens"
+      },
+      "friends": [
+        "arlene"
+      ]
+    },
+    "heather": {
+      "name": "Heather J Tate",
+      "address": {
+        "street": "3636 Poplar Chase Lane",
+        "city": "Post Falls"
+      },
+      "employerId": "ccc",
+      "hobbies": [
+        "making money",
+        "counting money"
+      ],
+      "status": "alumni",
+      "nomenclature": {
+        "suborder": "Haplorhini",
+        "family": "Hominidae",
+        "genus": "Homo",
+        "species": "ihavelotsofmoneyus"
+      },
+      "friends": []
+    }
+  },
+  "cars": {
+    "arlene": {
+      "model": "Retro Rides",
+      "color": "yellow",
+      "kind": "SEDAN",
+      "rating": 100,
+      "features": {
+        "color": "banana yellow to be specific"
+      }
+    },
+    "will": {
+      "model": "Speedzone Speedster",
+      "color": "red",
+      "tags": {
+        "speed": "extreme"
+      },
+      "kind": "RACE_CAR",
+      "rating": 100
+    },
+    "johnny": {
+      "model": "Glossy German",
+      "color": "silver",
+      "tags": {
+        "impression": "decadent",
+        "condition": "slightly beat-up"
+      },
+      "kind": "LIMOSINE",
+      "rating": 101
+    },
+    "heather": {
+      "model": "Glossy German",
+      "color": "black",
+      "tags": {
+        "impression": "decadent"
+      },
+      "kind": "LIMOSINE",
+      "rating": 200
+    }
+  },
+  "companies": {
+    "binsol": {
+      "id": "binsol",
+      "name": "Binary Solutions",
+      "legalForm": "public",
+      "ceoUsername": "johnny",
+      "offices": [
+        {
+          "street": "122 Elk Rd Little",
+          "city": "Tucson"
+        },
+        {
+          "street": "124 Elk Rd Little",
+          "city": "Tucson"
+        }
+      ]
+    },
+    "ccc": {
+      "id": "ccc",
+      "name": "Cool Computers Company",
+      "legalForm": "public",
+      "ceoUsername": "heather",
+      "offices": [
+        {
+          "street": "300 Elk Rd Little",
+          "city": "Tucson"
+        },
+        {
+          "street": "301 Elk Rd Little",
+          "city": "Tucson"
+        }
+      ]
+    }
+  },
+  "offices": [
+    {
+      "employeeId": "arlene",
+      "room number": 100,
+      "employerId": "binsol"
+    },
+    {
+      "employeeId": "will",
+      "room number": 101,
+      "employerId": "binsol"
+    },
+    {
+      "employeeId": "johnny",
+      "room number": 102,
+      "employerId": "binsol"
+    },
+    {
+      "employeeId": "heather",
+      "room number": 100,
+      "employerId": "ccc"
+    }
+  ],
+  "patents": {
+    "CCC OSv1": {
+      "patent-id": "100",
+      "inventor-id": "heather"
+    }
+  },
+  "projects": {
+    "Peace Among Companies": {
+      "projectId": 1,
+      "active": true,
+      "leadId": "arlene",
+      "patentId": ""
+    },
+    "Operation: Control CCC": {
+      "projectId": 2,
+      "active": false,
+      "leadId": "will",
+      "patentId": ""
+    },
+    "CCC operation system": {
+      "projectId": 3,
+      "active": true,
+      "leadId": "will",
+      "patentId": "100"
+    }
+  },
+  "papers": {
+    "apples": {
+      "name": "Deliciousness of apples",
+      "published": true
+    },
+    "coffee": {
+      "name": "How much coffee is too much coffee?",
+      "published": false
+    },
+    "tennis": {
+      "name": "How many tennis balls can fit into the average building?",
+      "published": true
+    }
+  },
+  "trashCans": {
+    "arlene": {
+      "brand": "Garbage Emporium",
+      "contents": [
+        {
+          "type": "apple",
+          "message": "Half-eaten"
+        },
+        {
+          "type": "sock",
+          "message": "Lost one"
+        }
+      ]
+    },
+    "will": {
+      "brand": "Garbage Emporium",
+      "contents": [
+        {
+          "type": "sock",
+          "message": "Lost one"
+        }
+      ]
+    },
+    "johnny": {
+      "brand": "Garbage Emporium",
+      "contents": []
+    },
+    "heather": {
+      "brand": "Solid Gold Products",
+      "contents": [
+        {
+          "type": "tissue",
+          "message": "Used"
+        }
+      ]
+    }
+  },
+  "auth": {
+    "arlene": {
+      "username": "arlene123",
+      "password": "password123",
+      "accessToken": "abcdef"
+    },
+    "will": {
+      "username": "catloverxoxo",
+      "password": "IActuallyPreferDogs",
+      "accessToken": "123456"
+    },
+    "johnny": {
+      "username": "johnny",
+      "password": "password",
+      "accessToken": "xyz"
+    },
+    "heather": {
+      "username": "cccrulez",
+      "password": "johnnyisabully",
+      "accessToken": "ijk"
+    }
+  }
+}

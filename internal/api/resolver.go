@@ -22,9 +22,9 @@ type ResolverHook struct {
 type Converter func(value reflect.Value, err error) (reflect.Value, error)
 
 type apiResolver struct {
-    next      resolvers.Resolver
-    options   ApiResolverOptions
-    resolvers map[string]resolvers.Resolver
+    next             resolvers.Resolver
+    options          ApiResolverOptions
+    resolvers        map[string]resolvers.Resolver
     resultConverters map[string]Converter
     inputConverters  inputconv.TypeConverters
 }
@@ -51,16 +51,35 @@ func NewResolverFactory(doc *openapi3.Swagger, options ApiResolverOptions) (reso
         return nil, "", err
     }
 
+    // Lets index all the operations.. needed later when looking up operation due to links.
+    operationsById := map[string]*openapi3.Operation{}
+    for path, v := range doc.Paths {
+        for method, operation := range v.Operations() {
+            if operation.OperationID != "" {
+                if operationsById[operation.OperationID] != nil {
+                    // error?
+                    fmt.Println("Duplicate operation id found:", operation.OperationID)
+                }
+                if operation.Extensions == nil {
+                    operation.Extensions = map[string]interface{}{}
+                }
+                operation.Extensions["path"] = path
+                operation.Extensions["method"] = method
+                operationsById[operation.OperationID] = operation
+            }
+        }
+    }
+
     refCache := map[string]interface{}{}
     for path, v := range doc.Paths {
         for method, operation := range v.Operations() {
             if queryMethods[method] {
-                err := result.addRootField(draftSchema, options.QueryType, operation, refCache, method, path)
+                err := result.addRootField(draftSchema, options.QueryType, operation, refCache, method, path, operationsById)
                 if err != nil {
                     fmt.Fprintf(result.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
                 }
             } else {
-                err := result.addRootField(draftSchema, options.MutationType, operation, refCache, method, path)
+                err := result.addRootField(draftSchema, options.MutationType, operation, refCache, method, path, operationsById)
                 if err != nil {
                     fmt.Fprintf(result.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
                 }
@@ -83,11 +102,10 @@ func NewResolverFactory(doc *openapi3.Swagger, options ApiResolverOptions) (reso
             })
         }
     }
-
     return result, draftSchema.String(), nil
 }
 
-func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType string, operation *openapi3.Operation, refCache map[string]interface{}, method string, path string) error {
+func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType string, operation *openapi3.Operation, refCache map[string]interface{}, method string, path string, operationsById map[string]*openapi3.Operation) error {
 
     fieldName := sanitizeName(path)
     if operation.OperationID != "" {
@@ -130,7 +148,7 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
             argName := makeUnique(argNames, sanitizeName(param.Value.Name))
             field += argName
             field += ": "
-            fieldType, err := factory.addGraphQLType(generated, param.Value.Schema, fmt.Sprintf("%s/Arg/%d", typePath, i), refCache, true)
+            fieldType, err := factory.addGraphQLType(generated, getSchema(param.Value), fmt.Sprintf("%s/Arg/%d", typePath, i), refCache, true)
             if err != nil {
                 if param.Value.Required {
                     fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: required parameter '%s' type cannot be converted: %s\n", rootType, fieldName, param.Value.Name, err)
@@ -148,6 +166,30 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
     field += ")"
     field += ": "
 
+    qlType, status, err := factory.getOperationResponseType(operation, rootType, fieldName, generated, typePath, refCache, operationsById)
+    if err != nil {
+        fmt.Fprintf(factory.options.Logs, err.Error())
+        return nil
+    }
+
+    field += qlType
+    gql := fmt.Sprintf(`type %s @graphql(alter:"add") { %s }`, rootType, field)
+    for _, g := range generated {
+        gql += "\n " + g
+    }
+    err = draftSchema.Parse(gql)
+    if err != nil {
+        return err
+    }
+
+    factory.resolvers[rootType+":"+fieldName] = resolvers.Func(func(request *resolvers.ResolveRequest) resolvers.Resolution {
+        return factory.resolve(request, operation, method, path, status)
+    })
+
+    return nil
+}
+
+func (factory apiResolver) getOperationResponseType(operation *openapi3.Operation, rootType string, fieldName string, generated map[string]string, typePath string, refCache map[string]interface{}, operationsById map[string]*openapi3.Operation) (string, []int, error) {
     responseTypesToStatus := map[string][]int{}
     for statusText, response := range operation.Responses {
         status, err := strconv.Atoi(statusText)
@@ -159,8 +201,16 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
 
             qlType, err := factory.addGraphQLType(generated, content.Schema, fmt.Sprintf("%s/DefaultResponse", typePath), refCache, false)
             if err != nil {
-                fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: result type cannot be converted: %s\n", rootType, fieldName, err)
-                return nil
+                return "", nil, errors.Errorf("dropping %s.%s field: result type cannot be converted: %s\n", rootType, fieldName, err)
+            }
+
+            if response.Value.Links != nil {
+                for field, link := range response.Value.Links {
+                    err := factory.addLink(generated, qlType, field, typePath+"/"+field, link, operationsById, refCache)
+                    if err != nil {
+                        return "", nil, errors.Errorf("dropping %s.%s link field: result type cannot be converted: %s\n", rootType, field, err)
+                    }
+                }
             }
 
             statuses := responseTypesToStatus[qlType]
@@ -171,34 +221,90 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
             }
         }
     }
+
     switch len(responseTypesToStatus) {
     case 0:
-        fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: graphql result type could not be determined\n", rootType, fieldName)
-        return nil
+        return "", nil, errors.Errorf("dropping %s.%s field: graphql result type could not be determined\n", rootType, fieldName)
     case 1:
         for qlType, status := range responseTypesToStatus {
-            field += qlType
-            gql := fmt.Sprintf(`type %s @graphql(alter:"add") { %s }`, rootType, field)
-            for _, g := range generated {
-                gql += "\n " + g
-            }
-            err := draftSchema.Parse(gql)
-            if err != nil {
-                return err
-            }
-
-            factory.resolvers[rootType+":"+fieldName] = resolvers.Func(func(request *resolvers.ResolveRequest) resolvers.Resolution {
-                return factory.resolve(request, operation, method, path, status)
-            })
-            return nil
+            return qlType, status, nil
         }
     }
-    fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: graphql multiple result types not yet supported\n", rootType, fieldName)
+    return "", nil, errors.Errorf("dropping %s.%s field: graphql multiple result types not yet supported\n", rootType, fieldName)
+}
+
+func getSchema(value *openapi3.Parameter) *openapi3.SchemaRef {
+    if value.Schema != nil {
+        return value.Schema
+    }
+    if mediaType, ok := value.Content["application/json"]; ok {
+        if mediaType.Schema != nil {
+            return mediaType.Schema
+        }
+    }
+    return nil
+}
+
+func (factory *apiResolver) addLink(generated map[string]string, qlType string, field string, typePath string, link *openapi3.LinkRef, operationsById map[string]*openapi3.Operation, refCache map[string]interface{}) error {
+
+    if true {
+        return nil
+    }
+
+    // to avoid recursion...
+    key := qlType + "/" + field
+    if link.Value.Extensions[key] != nil {
+        return nil
+    }
+    link.Value.Extensions[key] = true
+
+    // link.Value.OperationID
+    //
+    operation := operationsById[link.Value.OperationID]
+    if operation == nil {
+        return errors.New("Could not find operation with id: " + link.Value.OperationID)
+    }
+    _, status, err := factory.getOperationResponseType(operation, factory.options.QueryType, field, generated, typePath, refCache, operationsById)
+    if err != nil {
+        return err
+    }
+    path := operation.Extensions["path"].(string)
+    method := operation.Extensions["method"].(string)
+
+    vars := map[string]interface{}{}
+    vars["Name"] = qlType
+    vars["FieldName"] = sanitizeName(field)
+    vars["Link"] = link
+
+    linkField, err := renderTemplate(vars,
+        `
+@graphql(alter:"add")
+type {{.Name}} {
+  """
+  {{.Link.Value.Description}}
+  """
+  {{.FieldName}} 
+}
+`, )
+    if err != nil {
+        return errors.WithStack(err)
+    }
+
+    existing := generated[qlType]
+    if !strings.Contains(existing, linkField) {
+        existing = existing + linkField
+        generated[qlType] = existing
+    }
+
+    factory.resolvers[qlType+":"+field] = resolvers.Func(func(request *resolvers.ResolveRequest) resolvers.Resolution {
+        return factory.resolve(request, operation, method, path, status)
+    })
+
     return nil
 }
 
 func (factory apiResolver) addGraphQLType(generated map[string]string, sf *openapi3.SchemaRef, path string, refCache map[string]interface{}, inputType bool) (string, error) {
-    if sf.Value == nil {
+    if sf == nil || sf.Value == nil {
         panic("a schema reference was not resolved.")
     }
 

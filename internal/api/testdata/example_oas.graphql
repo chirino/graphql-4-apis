@@ -1,0 +1,426 @@
+directive @openapi(ref:String) on OBJECT | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT
+type Mutation {
+  """
+    Used to test link parameters with variables
+    
+    **endpoint:** `POST /scanner/{path}`
+    """
+  postScanner(query:String, path:String!):Mutation_PostScanner_DefaultResponseResult
+  """
+    Create a new user in the system.
+    
+    **endpoint:** `POST /users`
+    """
+  postUser(body:userInput!):userResult
+  """
+    Endpoint to test unsanitized parameters and data.
+    
+    **endpoint:** `POST /products`
+    """
+  post_product_with_id(body:product_with_idInput!):product_with_idResult
+  """
+    An endpoint to test authenticated POST requests.
+    
+    **endpoint:** `POST /projects`
+    """
+  post_project_with_id(body:project_with_idInput!):project_with_idResult
+}
+type Mutation_PostScanner_DefaultResponseResult {
+  body:String
+}
+input Mutation_PostUser_body_NomenclatureInput {
+  species:String
+}
+type Query {
+  """
+    Returns information about all employee cars
+    
+    **endpoint:** `GET /cars`
+    """
+  getAllCars:[carResult]
+  """
+    Returns the profile of a company with the given ID.
+    
+    **endpoint:** `GET /companies/{id}`
+    """
+  getCompanyById(id:String!):companyResult
+  """
+    Used to test link parameters with variables
+    
+    **endpoint:** `GET /copier`
+    """
+  getCopier(query:String):Query_GetCopier_DefaultResponseResult
+  """
+    Used to find the nearest coffee machine based on the user's coordinates. Used to test the content field in parameter objects.
+    
+    **endpoint:** `GET /coffeeLocation`
+    """
+  getNearestCoffeeMachine(lat:Float, long:Float):coordinatesResult
+  """
+    Return an office.
+    
+    **endpoint:** `GET /offices/{id}`
+    """
+  getOffice(  
+    """
+        Office ID
+        """
+    id:Int!,   
+    """
+        Describes the format of the return values. By default, the return type is `text/plain` and the return value is the two-letter language code for the identified language, for example, `en` for English or `es` for Spanish. To retrieve a JSON object that contains a ranking of identified languages with confidence scores, set the accept header parameter to `application/json`.
+        """
+    accept:String
+  ):officeResult
+  """
+    Return a list of papers. Endpoint to test 2XX status code.
+    
+    **endpoint:** `GET /papers`
+    """
+  getPapers:[paperResult]
+  """
+    Obtain reviews for a product.
+    
+    **endpoint:** `GET /products/{id}/reviews`
+    """
+  getProductReviews(id:String!, product_tag:String!):[Query_GetProductReviews_DefaultResponseResult]
+  """
+    Used to test link parameters with variables
+    
+    **endpoint:** `GET /scanner`
+    """
+  getScanner(query:String):Query_GetScanner_DefaultResponseResult
+  """
+    Returns a user from the system.
+    
+    **endpoint:** `GET /users/{username}`
+    """
+  getUserByUsername(  
+    """
+        Identifier of a user.
+        """
+    username:String!
+  ):userResult
+  """
+    Returns a car to test nesting of sub operations
+    
+    **endpoint:** `GET /users/{username}/car`
+    """
+  getUserCar(  
+    """
+        Identifier of a user.
+        """
+    username:String!
+  ):carResult
+  """
+    Returns a user's friends to test pagination
+    
+    **endpoint:** `GET /users/{username}/friends`
+    """
+  getUserFriends(  
+    """
+        Identifier of a user.
+        """
+    username:String!
+  ):[userResult]
+  """
+    Return a list of users.
+    
+    **endpoint:** `GET /users`
+    """
+  getUsers(  
+    """
+        Limit of the number of users to return.
+        """
+    limit:Int!
+  ):[userResult]
+  """
+    An endpoint to test authentication.
+    
+    **endpoint:** `GET /patents/{patent-id}`
+    """
+  get_patent_with_id(patent_id:String!):patent_with_idResult
+  """
+    Another endpoint to test unsanitized parameters and data.
+    
+    **endpoint:** `GET /products/{product-id}`
+    """
+  get_product_with_id(product_id:String!, product_tag:String!):product_with_idResult
+  """
+    Another endpoint to test authentication.
+    
+    **endpoint:** `GET /projects/{project-id}`
+    """
+  get_project_with_id(project_id:Int!):project_with_idResult
+}
+type Query_GetCopier_DefaultResponseResult {
+  body:String
+}
+type Query_GetProductReviews_DefaultResponseResult {
+  text:String
+  timestamp:Int
+}
+type Query_GetScanner_DefaultResponseResult {
+  body:String
+}
+type Query_GetUserByUsername_DefaultResponse_NomenclatureResult {
+  species:String
+}
+"""
+A property entry
+"""
+type StringResultProp {
+  key:String!
+  value:String
+}
+"""
+The legal address of a user
+"""
+input addressInput {
+  """
+    The city a user lives in
+    """
+  city:String
+  """
+    The street a user lives in
+    """
+  street:String
+}
+"""
+The legal address of a user
+"""
+type addressResult {
+  """
+    The city a user lives in
+    """
+  city:String
+  """
+    The street a user lives in
+    """
+  street:String
+}
+"""
+A car
+"""
+type carResult {
+  """
+    The color of the car.
+    """
+  color:String
+  kind:String
+  """
+    The model of the car.
+    """
+  model:String
+  """
+    The rating of the car.
+    """
+  rating:Float
+  """
+    Arbitrary (string) tags describing an entity.
+    """
+  tags:[StringResultProp!]
+}
+"""
+A company is the employer of many users
+"""
+type companyResult {
+  """
+    The identifier of the user who is CEO of the company
+    """
+  ceoUsername:String
+  """
+    The identifier of a company
+    """
+  id:String
+  """
+    The legal form of a company
+    """
+  legalForm:String
+  """
+    The legal name of a company
+    """
+  name:String
+  """
+    The offices of a company
+    """
+  offices:[addressResult]
+}
+type coordinatesResult {
+  lat:Float
+  long:Float
+}
+"""
+An office
+"""
+type officeResult {
+  """
+    The owner ID of the office
+    """
+  employeeId:String
+  """
+    The identifier of the company a user works for
+    """
+  employerId:String
+  """
+    The room number of the office
+    """
+  room_number:Int
+}
+"""
+A research paper
+"""
+type paperResult {
+  """
+    The name of the paper
+    """
+  name:String
+  """
+    Whether the paper is published
+    """
+  published:Boolean
+}
+"""
+A patent
+"""
+type patent_with_idResult {
+  """
+    The id of the inventor
+    """
+  inventor_id:String
+  """
+    The id of the patent
+    """
+  patent_id:String
+}
+"""
+A product
+"""
+input product_with_idInput {
+  """
+    The id of the product
+    """
+  product_id:String
+  """
+    The name of the product
+    """
+  product_name:String
+  """
+    A tag associated with the product
+    """
+  product_tag:String
+}
+"""
+A product
+"""
+type product_with_idResult {
+  """
+    The id of the product
+    """
+  product_id:String
+  """
+    The name of the product
+    """
+  product_name:String
+  """
+    A tag associated with the product
+    """
+  product_tag:String
+}
+"""
+A project
+"""
+input project_with_idInput {
+  """
+    Whether the project is active
+    """
+  active:Boolean
+  """
+    The id of the lead
+    """
+  lead_id:String
+  """
+    The patent associated with a project if applicable
+    """
+  patentId:String
+  """
+    The id of the project
+    """
+  project_id:Int
+}
+"""
+A project
+"""
+type project_with_idResult {
+  """
+    Whether the project is active
+    """
+  active:Boolean
+  """
+    The id of the lead
+    """
+  lead_id:String
+  """
+    The patent associated with a project if applicable
+    """
+  patentId:String
+  """
+    The id of the project
+    """
+  project_id:Int
+}
+"""
+A user represents a natural person
+"""
+input userInput {
+  """
+    The legal address of a user
+    """
+  address:addressInput
+  """
+    The legal address of a user
+    """
+  address2:addressInput
+  """
+    The identifier of the company a user works for
+    """
+  employerId:String
+  """
+    The hobbies of this user
+    """
+  hobbies:[String]
+  """
+    The legal name of a user
+    """
+  name:String
+  nomenclature:Mutation_PostUser_body_NomenclatureInput
+}
+"""
+A user represents a natural person
+"""
+type userResult {
+  """
+    The legal address of a user
+    """
+  address:addressResult
+  """
+    The legal address of a user
+    """
+  address2:addressResult
+  """
+    The identifier of the company a user works for
+    """
+  employerId:String
+  """
+    The hobbies of this user
+    """
+  hobbies:[String]
+  """
+    The legal name of a user
+    """
+  name:String
+  nomenclature:Query_GetUserByUsername_DefaultResponse_NomenclatureResult
+}
+schema {
+  mutation: Mutation
+  query: Query
+}

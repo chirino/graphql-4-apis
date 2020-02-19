@@ -165,7 +165,7 @@ func (factory apiResolver) resolve(gqlRequest *resolvers.ResolveRequest, operati
 
         for _, expected := range expectedStatus {
             if expected == resp.StatusCode {
-                var result map[string]interface{}
+                var result interface{}
                 err := json.NewDecoder(resp.Body).Decode(&result)
                 if err != nil {
                     return reflect.Value{}, errors.WithStack(err)
