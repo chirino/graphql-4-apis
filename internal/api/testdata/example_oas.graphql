@@ -28,6 +28,9 @@ type Mutation {
 type Mutation_PostScanner_DefaultResponseResult {
   body:String
 }
+type Mutation_PostUser_DefaultResponse_NomenclatureResult {
+  species:String
+}
 input Mutation_PostUser_body_NomenclatureInput {
   species:String
 }
@@ -161,9 +164,6 @@ type Query_GetProductReviews_DefaultResponseResult {
 }
 type Query_GetScanner_DefaultResponseResult {
   body:String
-}
-type Query_GetUserByUsername_DefaultResponse_NomenclatureResult {
-  species:String
 }
 """
 A property entry
@@ -418,7 +418,7 @@ type userResult {
     The legal name of a user
     """
   name:String
-  nomenclature:Query_GetUserByUsername_DefaultResponse_NomenclatureResult
+  nomenclature:Mutation_PostUser_DefaultResponse_NomenclatureResult
 }
 schema {
   mutation: Mutation
