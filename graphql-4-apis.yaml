@@ -1,0 +1,19 @@
+# Configure the host and port the service will listen on
+listen: localhost:8080
+
+# Configures how to get the openapi document.  It can be openapi v2 or v3.
+Openapi:
+  URL: https://api.chucknorris.io/documentation
+  # Set to true if the http server has an invalid cert that you trust
+  #InsecureClient: true
+  # Set if you need to set a bearer token to get the openapi document.
+  #BearerToken: mytoken
+
+# Configures the base URL that API requests will get issued against.
+APIBase:
+  URL: https://api.chucknorris.io
+  # Set to true if the http server has an invalid cert that you trust
+  #InsecureClient: true
+  # Set if you need to set a bearer token in api requests.
+  #BearerToken: mytoken
+

@@ -35291,4 +35291,6 @@ type io_k8s_kube_aggregator_pkg_apis_apiregistration_v1beta1_ServiceReferenceRes
   port:Int
 }
 schema {
+  mutation: Mutation
+  query: Query
 }

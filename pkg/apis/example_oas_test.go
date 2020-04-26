@@ -1,30 +1,29 @@
-package api_test
+package apis_test
 
 import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"github.com/chirino/graphql"
-	"github.com/chirino/graphql-4-apis/internal/api"
-	"github.com/chirino/graphql-4-apis/internal/dom"
-	"github.com/chirino/graphql/graphiql"
-	"github.com/chirino/graphql/relay"
-	"github.com/gorilla/mux"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/chirino/graphql-4-apis/internal/dom"
+	"github.com/chirino/graphql-4-apis/pkg/apis"
+	"github.com/chirino/graphql/graphiql"
+	"github.com/chirino/graphql/relay"
+	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/require"
 )
 
 func TestExampleOasAPI(t *testing.T) {
-	engine := graphql.New()
 
-	err := api.MountApi(engine, api.ApiResolverOptions{
-		Openapi: api.EndpointOptions{
+	engine, err := apis.CreateGatewayEngine(apis.Config{
+		Openapi: apis.EndpointOptions{
 			URL: "testdata/example_oas.json",
 		},
-		APIBase: api.EndpointOptions{
+		APIBase: apis.EndpointOptions{
 			URL: "http://localhost:8080/api",
 		},
 		Logs: ioutil.Discard,
@@ -53,7 +52,7 @@ func TestExampleOasAPI(t *testing.T) {
 	require.NoError(t, err)
 
 	router := mux.NewRouter().StrictSlash(true)
-	router.Handle("/graphql", &relay.Handler{Engine: engine})
+	router.Handle("/graphql", &relay.Handler{ServeGraphQLStream: engine.ServeGraphQLStream})
 	router.Handle("/graphiql", graphiql.New("ws://localhost:8080/graphql", true))
 
 	encode := func(w http.ResponseWriter, status int, r interface{}) {

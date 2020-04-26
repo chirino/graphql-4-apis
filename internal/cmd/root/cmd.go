@@ -1,4 +1,4 @@
-package graphql_4_apis
+package root
 
 import (
 	"fmt"

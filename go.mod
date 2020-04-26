@@ -13,6 +13,6 @@ require (
 
 go 1.13
 
-replace github.com/chirino/graphql => ../graphql
-
 replace github.com/getkin/kin-openapi => ../kin-openapi
+
+replace github.com/chirino/graphql => /Users/chirino/sandbox/graphql

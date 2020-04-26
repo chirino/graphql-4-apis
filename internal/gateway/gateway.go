@@ -2,17 +2,16 @@ package gateway
 
 import (
 	"fmt"
-	"github.com/chirino/graphql"
-	"github.com/chirino/graphql-4-apis/internal/api"
-	"github.com/chirino/graphql/graphiql"
-	"github.com/chirino/graphql/relay"
 	"log"
 	"net/http"
+
+	"github.com/chirino/graphql-4-apis/pkg/apis"
+	"github.com/chirino/graphql/graphiql"
+	"github.com/chirino/graphql/relay"
 )
 
-func ListenAndServe(config api.ApiResolverOptions) {
-	engine := graphql.New()
-	err := api.MountApi(engine, config)
+func ListenAndServe(config apis.Config) {
+	engine, err := apis.CreateGatewayEngine(config)
 	if err != nil {
 		log.Fatalf("%+v", err)
 	}
@@ -42,7 +41,7 @@ func ListenAndServe(config api.ApiResolverOptions) {
 	engine.Root = root(0)
 
 	addr := ":8080"
-	http.Handle("/graphql", &relay.Handler{Engine: engine})
+	http.Handle("/graphql", &relay.Handler{ServeGraphQLStream: engine.ServeGraphQLStream})
 	http.Handle("/", graphiql.New("ws://localhost"+addr+"/graphql", true))
 	fmt.Println("GraphQL service running at http://localhost" + addr + "/graphql")
 	fmt.Println("GraphiQL UI running at http://localhost" + addr + "/")

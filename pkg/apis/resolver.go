@@ -1,4 +1,4 @@
-package api
+package apis
 
 import (
 	"fmt"
@@ -23,7 +23,7 @@ type Converter func(value reflect.Value, err error) (reflect.Value, error)
 
 type apiResolver struct {
 	next             resolvers.Resolver
-	options          ApiResolverOptions
+	options          Config
 	resolvers        map[string]resolvers.Resolver
 	resultConverters map[string]Converter
 	inputConverters  inputconv.TypeConverters
@@ -31,15 +31,15 @@ type apiResolver struct {
 
 var _ resolvers.Resolver = &apiResolver{}
 
-func NewResolverFactory(doc *openapi3.Swagger, options ApiResolverOptions) (resolvers.Resolver, string, error) {
-	result := &apiResolver{options: options}
-	result.next = resolvers.DynamicResolverFactory()
-	result.resolvers = make(map[string]resolvers.Resolver)
-	result.resultConverters = make(map[string]Converter)
-	result.inputConverters = inputconv.TypeConverters{}
+func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolver, string, error) {
+	resolver := &apiResolver{options: options}
+	resolver.next = resolvers.DynamicResolverFactory()
+	resolver.resolvers = make(map[string]resolvers.Resolver)
+	resolver.resultConverters = make(map[string]Converter)
+	resolver.inputConverters = inputconv.TypeConverters{}
 
-	if result.options.Logs == nil {
-		result.options.Logs = os.Stderr
+	if resolver.options.Logs == nil {
+		resolver.options.Logs = os.Stderr
 	}
 	queryMethods := map[string]bool{"GET": true, "HEAD": true}
 
@@ -74,14 +74,14 @@ func NewResolverFactory(doc *openapi3.Swagger, options ApiResolverOptions) (reso
 	for path, v := range doc.Paths {
 		for method, operation := range v.Operations() {
 			if queryMethods[method] {
-				err := result.addRootField(draftSchema, options.QueryType, operation, refCache, method, path, operationsById)
+				err := resolver.addRootField(draftSchema, options.QueryType, operation, refCache, method, path, operationsById)
 				if err != nil {
-					fmt.Fprintf(result.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
+					fmt.Fprintf(resolver.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
 				}
 			} else {
-				err := result.addRootField(draftSchema, options.MutationType, operation, refCache, method, path, operationsById)
+				err := resolver.addRootField(draftSchema, options.MutationType, operation, refCache, method, path, operationsById)
 				if err != nil {
-					fmt.Fprintf(result.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
+					fmt.Fprintf(resolver.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
 				}
 			}
 		}
@@ -102,7 +102,11 @@ func NewResolverFactory(doc *openapi3.Swagger, options ApiResolverOptions) (reso
 			})
 		}
 	}
-	return result, draftSchema.String(), nil
+
+	draftSchema.EntryPointNames[schema.Mutation] = options.MutationType
+	draftSchema.EntryPointNames[schema.Query] = options.QueryType
+	draftSchema.ResolveTypes()
+	return resolver, draftSchema.String(), nil
 }
 
 func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType string, operation *openapi3.Operation, refCache map[string]interface{}, method string, path string, operationsById map[string]*openapi3.Operation) error {

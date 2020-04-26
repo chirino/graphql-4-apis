@@ -1,7 +1,7 @@
-package api
+package apis
 
 import (
-	"errors"
+	errors "errors"
 	"github.com/chirino/graphql"
 	"github.com/chirino/graphql/resolvers"
 	"io"
@@ -20,7 +20,7 @@ type EndpointOptions struct {
 	Client         *http.Client `json:"-"`
 }
 
-type ApiResolverOptions struct {
+type Config struct {
 	Openapi      EndpointOptions
 	APIBase      EndpointOptions
 	QueryType    string
@@ -28,8 +28,9 @@ type ApiResolverOptions struct {
 	Logs         io.Writer
 }
 
-func MountApi(engine *graphql.Engine, option ApiResolverOptions) error {
-	o := ApiResolverOptions{
+func CreateGatewayEngine(option Config) (*graphql.Engine, error) {
+	engine := graphql.New()
+	o := Config{
 		QueryType:    "Query",
 		MutationType: "Mutation",
 		Logs:         os.Stderr,
@@ -48,7 +49,7 @@ func MountApi(engine *graphql.Engine, option ApiResolverOptions) error {
 
 	doc, err := LoadOpenApiV2orV3Doc(o.Openapi)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// If the APIBase.URL is not configured.. try to figure it out from the openapi doc...
@@ -62,14 +63,18 @@ func MountApi(engine *graphql.Engine, option ApiResolverOptions) error {
 	}
 
 	if o.APIBase.URL == "" {
-		return errors.New("api base URL is not configured")
+		return nil, errors.New("api base URL is not configured")
 	}
 
 	resolver, schema, err := NewResolverFactory(doc, o)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	engine.Schema.Parse(schema)
+	err = engine.Schema.Parse(schema)
+	if err != nil {
+		return nil, err
+	}
+
 	engine.Resolver = resolvers.List(resolver, engine.Resolver)
-	return nil
+	return engine, nil
 }

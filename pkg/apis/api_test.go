@@ -1,19 +1,18 @@
-package api_test
+package apis_test
 
 import (
 	"context"
-	"github.com/chirino/graphql"
-	"github.com/chirino/graphql-4-apis/internal/api"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/chirino/graphql-4-apis/pkg/apis"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAdditionProperties(t *testing.T) {
-	engine := graphql.New()
 
 	testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		body, err := ioutil.ReadAll(req.Body)
@@ -23,11 +22,11 @@ func TestAdditionProperties(t *testing.T) {
 	}))
 	defer func() { testServer.Close() }()
 
-	err := api.MountApi(engine, api.ApiResolverOptions{
-		Openapi: api.EndpointOptions{
+	engine, err := apis.CreateGatewayEngine(apis.Config{
+		Openapi: apis.EndpointOptions{
 			URL: "testdata/additionalProperties.json",
 		},
-		APIBase: api.EndpointOptions{
+		APIBase: apis.EndpointOptions{
 			URL: testServer.URL,
 		},
 	})
