@@ -162,7 +162,7 @@ type Query_GetProductReviews_DefaultResponseResult {
 type Query_GetScanner_DefaultResponseResult {
   body:String
 }
-type Query_GetUserFriends_DefaultResponse_NomenclatureResult {
+type Query_GetUserByUsername_DefaultResponse_NomenclatureResult {
   species:String
 }
 """
@@ -418,7 +418,7 @@ type userResult {
     The legal name of a user
     """
   name:String
-  nomenclature:Query_GetUserFriends_DefaultResponse_NomenclatureResult
+  nomenclature:Query_GetUserByUsername_DefaultResponse_NomenclatureResult
 }
 schema {
   mutation: Mutation
