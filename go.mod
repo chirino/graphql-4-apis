@@ -1,9 +1,7 @@
 module github.com/chirino/graphql-4-apis
 
 require (
-	github.com/chirino/graphql v0.0.0-20200430165312-293648399b1a
-	github.com/coreos/go-etcd v2.0.0+incompatible // indirect
-	github.com/cpuguy83/go-md2man v1.0.10 // indirect
+	github.com/chirino/graphql v0.0.0-20200430200149-3ddb581af313
 	github.com/getkin/kin-openapi v0.8.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/gorilla/mux v1.7.4

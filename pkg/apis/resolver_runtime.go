@@ -56,7 +56,7 @@ func (factory apiResolver) resolve(gqlRequest *resolvers.ResolveRequest, operati
 		query := url.Values{}
 		headers := http.Header{}
 
-		ctx := gqlRequest.Context.GetContext()
+		ctx := gqlRequest.Context
 		if severRequest := ctx.Value("*net/http.Request"); severRequest != nil {
 			if serverRequest, ok := severRequest.(*http.Request); ok {
 				// Let's act like a proxy and pass through all the headers...
