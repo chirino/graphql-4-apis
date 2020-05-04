@@ -12,7 +12,7 @@ import (
 	"github.com/chirino/graphql-4-apis/internal/dom"
 	"github.com/chirino/graphql-4-apis/pkg/apis"
 	"github.com/chirino/graphql/graphiql"
-	"github.com/chirino/graphql/relay"
+	"github.com/chirino/graphql/httpgql"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 )
@@ -52,7 +52,7 @@ func TestExampleOasAPI(t *testing.T) {
 	require.NoError(t, err)
 
 	router := mux.NewRouter().StrictSlash(true)
-	router.Handle("/graphql", &relay.Handler{ServeGraphQLStream: engine.ServeGraphQLStream})
+	router.Handle("/graphql", &httpgql.Handler{ServeGraphQLStream: engine.ServeGraphQLStream})
 	router.Handle("/graphiql", graphiql.New("ws://localhost:8080/graphql", true))
 
 	encode := func(w http.ResponseWriter, status int, r interface{}) {

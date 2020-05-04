@@ -7,7 +7,7 @@ import (
 
 	"github.com/chirino/graphql-4-apis/pkg/apis"
 	"github.com/chirino/graphql/graphiql"
-	"github.com/chirino/graphql/relay"
+	"github.com/chirino/graphql/httpgql"
 )
 
 func ListenAndServe(config apis.Config) {
@@ -41,7 +41,7 @@ func ListenAndServe(config apis.Config) {
 	engine.Root = root(0)
 
 	addr := ":8080"
-	http.Handle("/graphql", &relay.Handler{ServeGraphQLStream: engine.ServeGraphQLStream})
+	http.Handle("/graphql", &httpgql.Handler{ServeGraphQLStream: engine.ServeGraphQLStream})
 	http.Handle("/", graphiql.New("ws://localhost"+addr+"/graphql", true))
 	fmt.Println("GraphQL service running at http://localhost" + addr + "/graphql")
 	fmt.Println("GraphiQL UI running at http://localhost" + addr + "/")

@@ -10,7 +10,7 @@ import (
 	"github.com/chirino/graphql-4-apis/internal/cmd/root"
 	"github.com/chirino/graphql-4-apis/pkg/apis"
 	"github.com/chirino/graphql/graphiql"
-	"github.com/chirino/graphql/relay"
+	"github.com/chirino/graphql/httpgql"
 	"github.com/ghodss/yaml"
 	"github.com/spf13/cobra"
 )
@@ -69,7 +69,7 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	endpoint := fmt.Sprintf("http://%s:%s", host, port)
-	http.Handle("/graphql", &relay.Handler{Engine: engine})
+	http.Handle("/graphql", &httpgql.Handler{Engine: engine})
 	log.Printf("GraphQL endpoint running at %s/graphql", endpoint)
 	http.Handle("/", graphiql.New(endpoint+"/graphql", false))
 	log.Printf("GraphQL UI running at %s", endpoint)
