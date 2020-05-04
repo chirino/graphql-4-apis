@@ -1,7 +1,7 @@
 module github.com/chirino/graphql-4-apis
 
 require (
-	github.com/chirino/graphql v0.0.0-20200430200149-3ddb581af313
+	github.com/chirino/graphql v0.0.0-20200504231024-e55565be1a07
 	github.com/getkin/kin-openapi v0.8.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/gorilla/mux v1.7.4
