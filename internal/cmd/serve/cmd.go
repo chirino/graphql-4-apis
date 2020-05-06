@@ -34,7 +34,7 @@ type Config struct {
 	apis.Config
 }
 
-func run(cmd *cobra.Command, args []string) {
+func run(_ *cobra.Command, _ []string) {
 	vebosityFmt := "%v"
 	if !root.Verbose {
 		vebosityFmt = "%+v\n"
@@ -69,7 +69,7 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	endpoint := fmt.Sprintf("http://%s:%s", host, port)
-	http.Handle("/graphql", &httpgql.Handler{Engine: engine})
+	http.Handle("/graphql", &httpgql.Handler{ServeGraphQLStream: engine.ServeGraphQLStream})
 	log.Printf("GraphQL endpoint running at %s/graphql", endpoint)
 	http.Handle("/", graphiql.New(endpoint+"/graphql", false))
 	log.Printf("GraphQL UI running at %s", endpoint)
