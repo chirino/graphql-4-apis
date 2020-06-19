@@ -12,19 +12,19 @@ import (
 // EndpointOptions defines how to access an endpoint URL
 type EndpointOptions struct {
 	// URL is the endpoint or endpoint base path that will be accessed.
-	URL string
+	URL string `yaml:"url,omitempty",json:"url,omitempty"`
 	// BearerToken is the Authentication Bearer token that will added to the request headers.
-	BearerToken string
+	BearerToken string `yaml:"bearer-token,omitempty",json:"bearer-token,omitempty"`
 	// Api key for the endpoint.
-	ApiKey string
+	ApiKey string `yaml:"api-key,omitempty",json:"api-key,omitempty"`
 	// InsecureClient allows the client request to connect to TLS servers that do not have a valid certificate.
-	InsecureClient bool
-	Client         *http.Client `json:"-"`
+	InsecureClient bool         `yaml:"insecure-client,omitempty",json:"insecure-client,omitempty"`
+	Client         *http.Client `yaml:"-",json:"-"`
 }
 
 type Config struct {
-	Openapi      EndpointOptions
-	APIBase      EndpointOptions
+	Openapi      EndpointOptions `json:"spec,omitempty",yaml:"spec,omitempty"`
+	APIBase      EndpointOptions `json:"api,omitempty",yaml:"api,omitempty"`
 	QueryType    string
 	MutationType string
 	Logs         io.Writer

@@ -84,9 +84,13 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 	queryMethods := map[string]bool{"GET": true, "HEAD": true}
 
 	draftSchema := schema.New()
-	err := draftSchema.Parse(`
-        directive @openapi(ref: String) on OBJECT | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT
-    `)
+	err := draftSchema.Parse(fmt.Sprintf(`
+        # directive @openapi(ref: String) on OBJECT | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT
+		type %s {}
+        type %s {}
+    `, options.QueryType, options.MutationType))
+
+
 	if err != nil {
 		return nil, "", err
 	}
@@ -145,7 +149,11 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 
 	draftSchema.EntryPointNames[schema.Mutation] = options.MutationType
 	draftSchema.EntryPointNames[schema.Query] = options.QueryType
-	draftSchema.ResolveTypes()
+	err = draftSchema.ResolveTypes()
+	if err != nil {
+		return nil, "", err
+	}
+
 	return resolver, draftSchema.String(), nil
 }
 
