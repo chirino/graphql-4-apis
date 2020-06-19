@@ -11,6 +11,8 @@ github.com/chirino/graphql v0.0.0-20200504231024-e55565be1a07 h1:AbgZnle7czLVj5m
 github.com/chirino/graphql v0.0.0-20200504231024-e55565be1a07/go.mod h1:wQjjxFMFyMlsWh4Z3nMuHQtevD4Ul9UVQSnz1JOLuP8=
 github.com/chirino/graphql v0.0.0-20200505224428-1ff86ec2830c h1:flujAyFe0NeqNUcSybZNxxfY4TmvulXzhOw1yCcT3bI=
 github.com/chirino/graphql v0.0.0-20200505224428-1ff86ec2830c/go.mod h1:wQjjxFMFyMlsWh4Z3nMuHQtevD4Ul9UVQSnz1JOLuP8=
+github.com/chirino/graphql v0.0.0-20200608130257-d6eac806bad6 h1:rBfH7Qik4cRCZdhZcu7S8UVM1jO8fYEW7Gal7yx6bYE=
+github.com/chirino/graphql v0.0.0-20200608130257-d6eac806bad6/go.mod h1:QJryzmxY+8v+nP7+HjPsMxT4q+tfZZq387ZdG0md+kU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd h1:qMd81Ts1T2OTKmB4acZcyKaMtRnY5Y44NuXGX2GFJ1w=
 github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd/go.mod h1:sE/e/2PUdi/liOCUjSTXgM1o87ZssimdTWN964YiIeI=
@@ -58,6 +60,8 @@ github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/jonboulle/clockwork v0.1.0/go.mod h1:Ii8DK3G1RaLaWxj9trq07+26W01tbo22gdxWY5EU2bo=
+github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
+github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFFd8Hwg//Y=
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/kisielk/errcheck v1.1.0/go.mod h1:EZBBE59ingxPouuu3KfxchcWSUPOHkagtvWXihfKN4Q=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=

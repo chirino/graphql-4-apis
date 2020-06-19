@@ -2,16 +2,19 @@ package apis
 
 import (
 	"fmt"
-	"github.com/chirino/graphql/inputconv"
-	"github.com/chirino/graphql/resolvers"
-	"github.com/chirino/graphql/schema"
-	"github.com/getkin/kin-openapi/openapi3"
-	"github.com/pkg/errors"
+	"net/http"
+	"net/url"
 	"os"
 	"reflect"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/chirino/graphql/inputconv"
+	"github.com/chirino/graphql/resolvers"
+	"github.com/chirino/graphql/schema"
+	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/pkg/errors"
 )
 
 type ResolverHook struct {
@@ -27,6 +30,7 @@ type apiResolver struct {
 	resolvers        map[string]resolvers.Resolver
 	resultConverters map[string]Converter
 	inputConverters  inputconv.TypeConverters
+	securityFuncs    []func(query url.Values, headers http.Header, cookies []*http.Cookie) (url.Values, http.Header, []*http.Cookie)
 }
 
 var _ resolvers.Resolver = &apiResolver{}
@@ -37,6 +41,42 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 	resolver.resolvers = make(map[string]resolvers.Resolver)
 	resolver.resultConverters = make(map[string]Converter)
 	resolver.inputConverters = inputconv.TypeConverters{}
+
+	for _, s := range doc.Security {
+		for ssName, _ := range s {
+			ss := doc.Components.SecuritySchemes[ssName]
+			if ss != nil && ss.Value != nil {
+				switch ss.Value.Type {
+				case "apiKey":
+					if options.APIBase.ApiKey == "" {
+						fmt.Println("API requires an api key, but it was not configured.")
+						continue
+					}
+					switch ss.Value.In {
+					case "header":
+						resolver.securityFuncs = append(resolver.securityFuncs, func(query url.Values, headers http.Header, cookies []*http.Cookie) (url.Values, http.Header, []*http.Cookie) {
+							headers.Set(ss.Value.Name, options.APIBase.ApiKey)
+							return query, headers, cookies
+						})
+					case "query":
+						resolver.securityFuncs = append(resolver.securityFuncs, func(query url.Values, headers http.Header, cookies []*http.Cookie) (url.Values, http.Header, []*http.Cookie) {
+							query.Set(ss.Value.Name, options.APIBase.ApiKey)
+							return query, headers, cookies
+						})
+
+					case "cookie":
+						resolver.securityFuncs = append(resolver.securityFuncs, func(query url.Values, headers http.Header, cookies []*http.Cookie) (url.Values, http.Header, []*http.Cookie) {
+							cookies = append(cookies, &http.Cookie{
+								Name:  ss.Value.Name,
+								Value: options.APIBase.ApiKey,
+							})
+							return query, headers, cookies
+						})
+					}
+				}
+			}
+		}
+	}
 
 	if resolver.options.Logs == nil {
 		resolver.options.Logs = os.Stderr
@@ -143,6 +183,13 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
 
 	if len(operation.Parameters) > 0 {
 		for i, param := range operation.Parameters {
+
+			if param.Value.In == "header" && param.Value.Name == "Accept-Encoding" {
+				// the go http client automatically handles gzip decoding...
+				// don't allow setting the Accept-Encoding header via a parameter.
+				continue
+			}
+
 			if addComma {
 				field += ",\n"
 			} else {

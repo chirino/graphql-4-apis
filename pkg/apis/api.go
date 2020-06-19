@@ -15,6 +15,8 @@ type EndpointOptions struct {
 	URL string
 	// BearerToken is the Authentication Bearer token that will added to the request headers.
 	BearerToken string
+	// Api key for the endpoint.
+	ApiKey string
 	// InsecureClient allows the client request to connect to TLS servers that do not have a valid certificate.
 	InsecureClient bool
 	Client         *http.Client `json:"-"`
