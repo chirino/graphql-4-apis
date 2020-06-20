@@ -14,7 +14,8 @@ func TestLoadKubernetesAPI(t *testing.T) {
 			URL: "testdata/k8s.json",
 		},
 		APIBase: apis.EndpointOptions{
-			URL: "http://fake:8080",
+			URL:    "http://fake:8080",
+			ApiKey: "fake",
 		},
 		Logs: ioutil.Discard,
 	})

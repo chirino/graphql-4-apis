@@ -168,7 +168,6 @@ func (factory apiResolver) resolve(gqlRequest *resolvers.ResolveRequest, operati
 			}
 		}
 
-
 		headers.Set("Content-Type", "application/json")
 		headers.Set("Accept", "application/json")
 

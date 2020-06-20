@@ -3,10 +3,11 @@ package apis
 import (
 	"bytes"
 	"fmt"
-	"github.com/kr/text"
-	"github.com/pkg/errors"
 	"strings"
 	"text/template"
+
+	"github.com/chirino/graphql/schema"
+	"github.com/pkg/errors"
 )
 
 func sanitizeName(id string) string {
@@ -37,9 +38,9 @@ func makeUnique(existing map[string]bool, name string) string {
 	return cur
 }
 
-func requiredType(qlType string, required bool) string {
+func requiredType(qlType schema.Type, required bool) (t schema.Type) {
 	if required {
-		return qlType + "!"
+		return &schema.NonNull{OfType: qlType}
 	}
 	return qlType
 }
@@ -49,16 +50,6 @@ func capitalizeFirstLetter(name string) string {
 		return ""
 	}
 	return strings.ToUpper(name[0:1]) + name[1:]
-}
-
-func comment(desc string) string {
-	if desc == "" {
-		return ""
-	}
-	if !strings.HasSuffix(desc, "\n") {
-		desc += "\n"
-	}
-	return text.Indent(desc, "# ")
 }
 
 func description(desc string) string {

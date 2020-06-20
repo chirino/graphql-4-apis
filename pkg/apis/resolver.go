@@ -83,17 +83,7 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 	}
 	queryMethods := map[string]bool{"GET": true, "HEAD": true}
 
-	draftSchema := schema.New()
-	err := draftSchema.Parse(fmt.Sprintf(`
-        # directive @openapi(ref: String) on OBJECT | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT
-		type %s {}
-        type %s {}
-    `, options.QueryType, options.MutationType))
-
-
-	if err != nil {
-		return nil, "", err
-	}
+	draft := schema.New()
 
 	// Lets index all the operations.. needed later when looking up operation due to links.
 	operationsById := map[string]*openapi3.Operation{}
@@ -118,12 +108,12 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 	for path, v := range doc.Paths {
 		for method, operation := range v.Operations() {
 			if queryMethods[method] {
-				err := resolver.addRootField(draftSchema, options.QueryType, operation, refCache, method, path, operationsById)
+				err := resolver.addRootField(draft, options.QueryType, operation, refCache, method, path, operationsById)
 				if err != nil {
 					fmt.Fprintf(resolver.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
 				}
 			} else {
-				err := resolver.addRootField(draftSchema, options.MutationType, operation, refCache, method, path, operationsById)
+				err := resolver.addRootField(draft, options.MutationType, operation, refCache, method, path, operationsById)
 				if err != nil {
 					fmt.Fprintf(resolver.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
 				}
@@ -134,7 +124,7 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 	// Sort the type fields since we generated them by mutating..
 	// which leads to then being in a random order based on the random order
 	// they are received from the openapi doc.
-	for _, t := range draftSchema.Types {
+	for _, t := range draft.Types {
 		if t, ok := t.(*schema.Object); ok {
 			sort.Slice(t.Fields, func(i, j int) bool {
 				return t.Fields[i].Name < t.Fields[j].Name
@@ -147,45 +137,72 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 		}
 	}
 
-	draftSchema.EntryPointNames[schema.Mutation] = options.MutationType
-	draftSchema.EntryPointNames[schema.Query] = options.QueryType
-	err = draftSchema.ResolveTypes()
+	if draft.Types[options.MutationType] != nil {
+		draft.EntryPoints[schema.Mutation] = draft.Types[options.MutationType]
+	}
+	if draft.Types[options.QueryType] != nil {
+		draft.EntryPoints[schema.Query] = draft.Types[options.QueryType]
+	}
+
+	err := draft.ResolveTypes()
 	if err != nil {
 		return nil, "", err
 	}
 
-	return resolver, draftSchema.String(), nil
+	return resolver, draft.String(), nil
 }
 
-func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType string, operation *openapi3.Operation, refCache map[string]interface{}, method string, path string, operationsById map[string]*openapi3.Operation) error {
+func (factory apiResolver) addRootField(draft *schema.Schema, rootType string, operation *openapi3.Operation, refCache map[string]interface{}, method string, path string, operationsById map[string]*openapi3.Operation) error {
+
+	var rootObject *schema.Object
+	if t, ok := draft.Types[rootType]; ok {
+		rootObject = t.(*schema.Object)
+	} else {
+		rootObject = &schema.Object{
+			Name: rootType,
+		}
+		draft.Types[rootType] = rootObject
+	}
 
 	fieldName := sanitizeName(path)
 	if operation.OperationID != "" {
 		fieldName = sanitizeName(operation.OperationID)
 	}
 
+	if rootObject.Fields.Get(fieldName) != nil {
+		fmt.Fprintf(factory.options.Logs, "field already exists: %s", fieldName)
+		return nil
+	}
+
 	typePath := rootType + "/" + capitalizeFirstLetter(fieldName)
 
-	field := description(operation.Description + "\n\n**endpoint:** `" + method + " " + path + "`")
-	field += fieldName
-	field += "("
+	qlType, status, err := factory.getOperationResponseType(draft, operation, rootType, fieldName, typePath, refCache, operationsById)
+	if err != nil {
+		fmt.Fprintf(factory.options.Logs, err.Error())
+		return nil
+	}
 
-	generated := map[string]string{}
+	field := &schema.Field{
+		Name: fieldName,
+		Desc: desc(operation.Description + "\n\n**endpoint:** `" + method + " " + path + "`"),
+		Type: qlType,
+	}
+
 	argNames := map[string]bool{}
-	addComma := false
 	if operation.RequestBody != nil {
 		content := operation.RequestBody.Value.Content.Get("application/json")
 		if content != nil {
-			argName := makeUnique(argNames, "body")
-			field += argName
-			field += ": "
-			fieldType, err := factory.addGraphQLType(generated, content.Schema, typePath+"/body", refCache, true)
+			fieldType, err := factory.addGraphQLType(draft, content.Schema, typePath+"/body", refCache, true)
 			if err != nil {
 				fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: required parameter '%s' type cannot be converted: %s\n", rootType, fieldName, "body", err)
 				return nil
 			}
-			field += requiredType(fieldType, true)
-			addComma = true
+
+			argName := makeUnique(argNames, "body")
+			field.Args = append(field.Args, &schema.InputValue{
+				Name: argName,
+				Type: requiredType(fieldType, true),
+			})
 		}
 	}
 
@@ -198,16 +215,8 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
 				continue
 			}
 
-			if addComma {
-				field += ",\n"
-			} else {
-				field += "\n"
-			}
-			field += description(param.Value.Description)
 			argName := makeUnique(argNames, sanitizeName(param.Value.Name))
-			field += argName
-			field += ": "
-			fieldType, err := factory.addGraphQLType(generated, getSchema(param.Value), fmt.Sprintf("%s/Arg/%d", typePath, i), refCache, true)
+			fieldType, err := factory.addGraphQLType(draft, getSchema(param.Value), fmt.Sprintf("%s/Arg/%d", typePath, i), refCache, true)
 			if err != nil {
 				if param.Value.Required {
 					fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: required parameter '%s' type cannot be converted: %s\n", rootType, fieldName, param.Value.Name, err)
@@ -217,30 +226,16 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
 					continue
 				}
 			}
-			field += requiredType(fieldType, param.Value.Required)
-			addComma = true
+
+			field.Args = append(field.Args, &schema.InputValue{
+				Desc: desc(param.Value.Description),
+				Name: argName,
+				Type: requiredType(fieldType, param.Value.Required),
+			})
 		}
 	}
 
-	field += ")"
-	field += ": "
-
-	qlType, status, err := factory.getOperationResponseType(operation, rootType, fieldName, generated, typePath, refCache, operationsById)
-	if err != nil {
-		fmt.Fprintf(factory.options.Logs, err.Error())
-		return nil
-	}
-
-	field += qlType
-	gql := fmt.Sprintf(`type %s @graphql(alter:"add") { %s }`, rootType, field)
-	for _, g := range generated {
-		gql += "\n " + g
-	}
-	err = draftSchema.Parse(gql)
-	if err != nil {
-		return err
-	}
-
+	rootObject.Fields = append(rootObject.Fields, field)
 	factory.resolvers[rootType+":"+fieldName] = resolvers.Func(func(request *resolvers.ResolveRequest, next resolvers.Resolution) resolvers.Resolution {
 		return factory.resolve(request, operation, method, path, status)
 	})
@@ -248,8 +243,8 @@ func (factory apiResolver) addRootField(draftSchema *schema.Schema, rootType str
 	return nil
 }
 
-func (factory apiResolver) getOperationResponseType(operation *openapi3.Operation, rootType string, fieldName string, generated map[string]string, typePath string, refCache map[string]interface{}, operationsById map[string]*openapi3.Operation) (string, []int, error) {
-	responseTypesToStatus := map[string][]int{}
+func (factory apiResolver) getOperationResponseType(draft *schema.Schema, operation *openapi3.Operation, rootType string, fieldName string, typePath string, refCache map[string]interface{}, operationsById map[string]*openapi3.Operation) (schema.Type, []int, error) {
+	responseTypesToStatus := map[schema.Type][]int{}
 	for statusText, response := range operation.Responses {
 		status, err := strconv.Atoi(statusText)
 		if err != nil {
@@ -258,16 +253,16 @@ func (factory apiResolver) getOperationResponseType(operation *openapi3.Operatio
 		content := response.Value.Content.Get("application/json")
 		if strings.HasPrefix(statusText, "2") && content != nil {
 
-			qlType, err := factory.addGraphQLType(generated, content.Schema, fmt.Sprintf("%s/DefaultResponse", typePath), refCache, false)
+			qlType, err := factory.addGraphQLType(draft, content.Schema, fmt.Sprintf("%s/DefaultResponse", typePath), refCache, false)
 			if err != nil {
-				return "", nil, errors.Errorf("dropping %s.%s field: result type cannot be converted: %s\n", rootType, fieldName, err)
+				return nil, nil, errors.Errorf("dropping %s.%s field: result type cannot be converted: %s\n", rootType, fieldName, err)
 			}
 
 			if response.Value.Links != nil {
 				for field, link := range response.Value.Links {
-					err := factory.addLink(generated, qlType, field, typePath+"/"+field, link, operationsById, refCache)
+					err := factory.addLink(draft, qlType.(*schema.Object), field, typePath+"/"+field, link, operationsById, refCache)
 					if err != nil {
-						return "", nil, errors.Errorf("dropping %s.%s link field: result type cannot be converted: %s\n", rootType, field, err)
+						return nil, nil, errors.Errorf("dropping %s.%s link field: result type cannot be converted: %s\n", rootType, field, err)
 					}
 				}
 			}
@@ -283,13 +278,13 @@ func (factory apiResolver) getOperationResponseType(operation *openapi3.Operatio
 
 	switch len(responseTypesToStatus) {
 	case 0:
-		return "", nil, errors.Errorf("dropping %s.%s field: graphql result type could not be determined\n", rootType, fieldName)
+		return nil, nil, errors.Errorf("dropping %s.%s field: graphql result type could not be determined\n", rootType, fieldName)
 	case 1:
 		for qlType, status := range responseTypesToStatus {
 			return qlType, status, nil
 		}
 	}
-	return "", nil, errors.Errorf("dropping %s.%s field: graphql multiple result types not yet supported\n", rootType, fieldName)
+	return nil, nil, errors.Errorf("dropping %s.%s field: graphql multiple result types not yet supported\n", rootType, fieldName)
 }
 
 func getSchema(value *openapi3.Parameter) *openapi3.SchemaRef {
@@ -304,98 +299,105 @@ func getSchema(value *openapi3.Parameter) *openapi3.SchemaRef {
 	return nil
 }
 
-func (factory *apiResolver) addLink(generated map[string]string, qlType string, field string, typePath string, link *openapi3.LinkRef, operationsById map[string]*openapi3.Operation, refCache map[string]interface{}) error {
+func (factory *apiResolver) addLink(draft *schema.Schema, qlType *schema.Object, fieldName string, typePath string, link *openapi3.LinkRef, operationsById map[string]*openapi3.Operation, refCache map[string]interface{}) error {
 
 	if true {
 		return nil
 	}
 
+	if qlType.Fields.Get(fieldName) != nil {
+		return nil
+	}
+
 	// to avoid recursion...
-	key := qlType + "/" + field
+	key := qlType.Name + "/" + fieldName
 	if link.Value.Extensions[key] != nil {
 		return nil
 	}
 	link.Value.Extensions[key] = true
 
 	// link.Value.OperationID
-	//
 	operation := operationsById[link.Value.OperationID]
 	if operation == nil {
 		return errors.New("Could not find operation with id: " + link.Value.OperationID)
 	}
-	_, status, err := factory.getOperationResponseType(operation, factory.options.QueryType, field, generated, typePath, refCache, operationsById)
+
+	responseType, status, err := factory.getOperationResponseType(draft, operation, factory.options.QueryType, fieldName, typePath, refCache, operationsById)
 	if err != nil {
 		return err
 	}
+
+	qlType.Fields = append(qlType.Fields, &schema.Field{
+		Desc: desc(link.Value.Description),
+		Name: fieldName,
+		Type: responseType,
+	})
+
 	path := operation.Extensions["path"].(string)
 	method := operation.Extensions["method"].(string)
-
-	vars := map[string]interface{}{}
-	vars["Name"] = qlType
-	vars["FieldName"] = sanitizeName(field)
-	vars["Link"] = link
-
-	linkField, err := renderTemplate(vars,
-		`
-@graphql(alter:"add")
-type {{.Name}} {
-  """
-  {{.Link.Value.Description}}
-  """
-  {{.FieldName}} 
-}
-`)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	existing := generated[qlType]
-	if !strings.Contains(existing, linkField) {
-		existing = existing + linkField
-		generated[qlType] = existing
-	}
-
-	factory.resolvers[qlType+":"+field] = resolvers.Func(func(request *resolvers.ResolveRequest, next resolvers.Resolution) resolvers.Resolution {
+	factory.resolvers[qlType.Name+":"+fieldName] = resolvers.Func(func(request *resolvers.ResolveRequest, next resolvers.Resolution) resolvers.Resolution {
 		return factory.resolve(request, operation, method, path, status)
 	})
 
 	return nil
 }
 
-func (factory apiResolver) addGraphQLType(generated map[string]string, sf *openapi3.SchemaRef, path string, refCache map[string]interface{}, inputType bool) (string, error) {
+func (factory apiResolver) addGraphQLType(draft *schema.Schema, sf *openapi3.SchemaRef, path string, refCache map[string]interface{}, inputType bool) (schema.Type, error) {
 	if sf == nil || sf.Value == nil {
 		panic("a schema reference was not resolved.")
 	}
-
 	cacheKey := "o:" + sf.Ref
 	if inputType {
 		cacheKey = "i:" + sf.Ref
 	}
 	if sf.Ref != "" {
 		if v, ok := refCache[cacheKey]; ok {
-			if v, ok := v.(string); ok {
+			if v, ok := v.(schema.Type); ok {
 				return v, nil
 			}
-			return "", v.(error)
+			return nil, v.(error)
 		}
 	}
 
+	r, err := factory._addGraphQLType(draft, sf, path, refCache, inputType)
+	if err != nil {
+		refCache[cacheKey] = err
+		return nil, err
+	}
+	refCache[cacheKey] = r
+	return r, nil
+}
+
+func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.SchemaRef, path string, refCache map[string]interface{}, inputType bool) (schema.Type, error) {
+
 	switch sf.Value.Type {
 	case "string":
-		return "String", nil
+		return draft.Types["String"], nil
 	case "integer":
-		return "Int", nil
+		return draft.Types["Int"], nil
 	case "number":
-		return "Float", nil
+		return draft.Types["Float"], nil
 	case "boolean":
-		return "Boolean", nil
+		return draft.Types["Boolean"], nil
 	case "array":
-		nestedType, err := factory.addGraphQLType(generated, sf.Value.Items, path, refCache, inputType)
+		nestedType, err := factory.addGraphQLType(draft, sf.Value.Items, path, refCache, inputType)
 		if err != nil {
-			return "", err
+			return nil, err
 		}
-		return fmt.Sprintf("[%s]", nestedType), nil
+		return &schema.List{OfType: nestedType}, nil
 	case "object":
+
+		if len(sf.Value.Properties) == 0 && sf.Value.AdditionalProperties != nil {
+			nestedType, err := factory.addGraphQLType(draft, sf.Value.AdditionalProperties, path, refCache, inputType)
+			if err != nil {
+				return nil, err
+			}
+			wrapper, err := factory.addPropWrapper(draft, nestedType, inputType)
+			if err != nil {
+				return nil, err
+			}
+			return &schema.List{OfType: &schema.NonNull{OfType: wrapper}}, nil
+		}
 
 		typeName := path
 		if sf.Ref != "" {
@@ -408,152 +410,175 @@ func (factory apiResolver) addGraphQLType(generated map[string]string, sf *opena
 		}
 		typeName = sanitizeName(typeName)
 
-		if len(sf.Value.Properties) == 0 && sf.Value.AdditionalProperties != nil {
-			nestedType, err := factory.addGraphQLType(generated, sf.Value.AdditionalProperties, path, refCache, inputType)
-			if err != nil {
-				return "", err
-			}
-			wrapper, err := factory.addPropWrapper(generated, nestedType, inputType)
-			if err != nil {
-				return "", err
-			}
-			return fmt.Sprintf("[%s!]", wrapper), nil
+		t := draft.Types[typeName]
+		if t != nil {
+			return t, nil
 		}
 
-		vars := map[string]interface{}{}
-		vars["Description"] = description(sf.Value.Description)
-		vars["Name"] = typeName
-		fields := []string{}
+		if inputType {
+			t = &schema.InputObject{
+				Desc: desc(sf.Value.Description),
+				Name: typeName,
+			}
+		} else {
+			t = &schema.Object{
+				Desc: desc(sf.Value.Description),
+				Name: typeName,
+			}
+		}
 
 		// In case a type is recursive.. lets stick it in the cache now before we try to resolve it's fields..
-		refCache[cacheKey] = typeName
+		draft.Types[typeName] = t
 
 		for name, ref := range sf.Value.Properties {
-			field := description(ref.Value.Description)
-			fieldType, err := factory.addGraphQLType(generated, ref, path+"/"+capitalizeFirstLetter(name), refCache, inputType)
+
+			fieldType, err := factory.addGraphQLType(draft, ref, path+"/"+capitalizeFirstLetter(name), refCache, inputType)
 			if err != nil {
 				fmt.Fprintf(factory.options.Logs, "dropping openapi field '%s' from graphql type '%s': %s\n", name, typeName, err)
 				continue
 			}
-			field += sanitizeName(name) + ": " + fieldType
-			fields = append(fields, field)
+			if inputType {
+				object := t.(*schema.InputObject)
+				object.Fields = append(object.Fields, &schema.InputValue{
+					Desc: desc(ref.Value.Description),
+					Name: sanitizeName(name),
+					Type: fieldType,
+				})
+			} else {
+				object := t.(*schema.Object)
+				object.Fields = append(object.Fields, &schema.Field{
+					Desc: desc(ref.Value.Description),
+					Name: sanitizeName(name),
+					Type: fieldType,
+				})
+			}
 		}
 
-		if len(fields) == 0 {
-			err := errors.New(fmt.Sprintf("graphql type '%s' would have no fields", typeName))
-			refCache[cacheKey] = err
-			return "", err
-		}
-
-		vars["Fields"] = fields
-		vars["Ref"] = sf.Ref
-		vars["Type"] = "type"
 		if inputType {
-			vars["Type"] = "input"
+			object := t.(*schema.InputObject)
+			if len(object.Fields) == 0 {
+				delete(draft.Types, typeName)
+				err := errors.New(fmt.Sprintf("graphql type '%s' would have no fields", typeName))
+				return nil, err
+			}
+		} else {
+			object := t.(*schema.Object)
+			if len(object.Fields) == 0 {
+				delete(draft.Types, typeName)
+				err := errors.New(fmt.Sprintf("graphql type '%s' would have no fields", typeName))
+				return nil, err
+			}
 		}
-		gql, err := renderTemplate(vars,
-			`
-{{.Description}}
-{{.Type}} {{.Name}} {
-{{- range $k, $field :=  .Fields }}
-{{$field}}
-{{- end }}
-}
-`)
-		if err != nil {
-			refCache[cacheKey] = err
-			return "", err
-		}
-		generated[typeName] = gql
-		refCache[cacheKey] = typeName
-		return typeName, nil
+
+		return t, nil
 
 	default:
-		err := errors.New(fmt.Sprintf("cannot convert to a graphql type '%s' ", sf.Value.Type))
-		refCache[cacheKey] = err
-		return "", err
-
+		return nil, errors.New(fmt.Sprintf("cannot convert to a graphql type '%s' ", sf.Value.Type))
 	}
 
 }
 
-func (factory *apiResolver) addPropWrapper(generated map[string]string, nestedType string, inputType bool) (string, error) {
-	nestedTypeLong := toTypeName(nestedType)
-	graphType := "type"
-	name := nestedTypeLong + "ResultProp"
+func (factory *apiResolver) addPropWrapper(draft *schema.Schema, nestedType schema.Type, inputType bool) (schema.NamedType, error) {
+
+	nestedTypeLong := schema.DeepestType(nestedType).String()
+	graphTypeName := nestedTypeLong + "ResultProp"
 	if inputType {
-		graphType = "input"
-		name = nestedTypeLong + "InputProp"
+		graphTypeName = nestedTypeLong + "InputProp"
 	}
-	gql := fmt.Sprintf(`
-        %s
-        %s %s {
-            key: String!
-            value: %s
-        }
-    `, description(`A property entry`),
-		graphType, name,
-		nestedType)
-	generated[name] = gql
 
-	// Lets register a converter for this type....
-	factory.resultConverters["["+name+"!]"] = func(value reflect.Value, err error) (reflect.Value, error) {
-		// input is an map.. convert to an array
-		if err != nil {
-			return value, err
-		}
-		if value.IsNil() {
-			return value, err
-		}
-		m := value.Interface().(map[string]interface{})
-		if m == nil {
-			return value, err
+	// Wrapper type might already exist...
+	graphType := draft.Types[graphTypeName]
+	if graphType != nil {
+		return graphType, nil
+	}
+
+	if inputType {
+
+		graphType = &schema.InputObject{
+			Name: graphTypeName,
+			Fields: []*schema.InputValue{
+				&schema.InputValue{
+					Name: "key",
+					Type: requiredType(draft.Types["String"], true),
+				},
+				&schema.InputValue{
+					Name: "value",
+					Type: nestedType,
+				},
+			},
 		}
 
-		type Prop struct {
-			Key   string      `json:"key"`
-			Value interface{} `json:"value"`
-		}
-		props := make([]Prop, len(m))
-		i := 0
-		for k, v := range m {
-			props[i] = Prop{Key: k, Value: v}
-			i++
-		}
-		return reflect.ValueOf(props), nil
-	}
-	factory.inputConverters["["+name+"!]"] = func(t schema.Type, value interface{}) (interface{}, error) {
-		if value == nil {
-			return nil, nil
-		}
-		// input is an array.. convert to a map...
-		if value, ok := value.([]interface{}); ok {
-			result := make(map[string]interface{}, len(value))
-			for _, item := range value {
-				if item, ok := item.(map[string]interface{}); ok {
-					if key, ok := item["key"].(string); ok {
-						value := item["value"]
-						result[key] = value
-					} else {
-						return nil, errors.Errorf("input conversion of "+t.String()+" type failed: expected array item key to be a string, got: %T", key)
-					}
-				} else {
-					return nil, errors.Errorf("input conversion of "+t.String()+" type failed: expected array item to be a map, got: %T", item)
-				}
+		factory.inputConverters["["+graphType.TypeName()+"!]"] = func(t schema.Type, value interface{}) (interface{}, error) {
+			if value == nil {
+				return nil, nil
 			}
-			return result, nil
+			// input is an array.. convert to a map...
+			if value, ok := value.([]interface{}); ok {
+				result := make(map[string]interface{}, len(value))
+				for _, item := range value {
+					if item, ok := item.(map[string]interface{}); ok {
+						if key, ok := item["key"].(string); ok {
+							value := item["value"]
+							result[key] = value
+						} else {
+							return nil, errors.Errorf("input conversion of "+t.String()+" type failed: expected array item key to be a string, got: %T", key)
+						}
+					} else {
+						return nil, errors.Errorf("input conversion of "+t.String()+" type failed: expected array item to be a map, got: %T", item)
+					}
+				}
+				return result, nil
+			}
+			return nil, errors.Errorf("input conversion of "+t.String()+" type failed: expected array, got: %T", value)
 		}
-		return nil, errors.Errorf("input conversion of "+t.String()+" type failed: expected array, got: %T", value)
+
+	} else {
+		graphType = &schema.Object{
+			Desc: desc("A property entry"),
+			Name: graphTypeName,
+			Fields: []*schema.Field{
+				&schema.Field{
+					Name: "key",
+					Type: requiredType(draft.Types["String"], true),
+				},
+				&schema.Field{
+					Name: "value",
+					Type: nestedType,
+				},
+			},
+		}
+
+		factory.resultConverters["["+graphType.TypeName()+"!]"] = func(value reflect.Value, err error) (reflect.Value, error) {
+			// input is a map... convert to an array
+			if err != nil {
+				return value, err
+			}
+			if value.IsNil() {
+				return value, err
+			}
+			m := value.Interface().(map[string]interface{})
+			if m == nil {
+				return value, err
+			}
+
+			type Prop struct {
+				Key   string      `json:"key"`
+				Value interface{} `json:"value"`
+			}
+			props := make([]Prop, len(m))
+			i := 0
+			for k, v := range m {
+				props[i] = Prop{Key: k, Value: v}
+				i++
+			}
+			return reflect.ValueOf(props), nil
+		}
 	}
-	return name, nil
+
+	draft.Types[graphType.TypeName()] = graphType
+	return graphType, nil
 }
 
-func toTypeName(v string) string {
-	if strings.HasSuffix(v, "!") {
-		return toTypeName(strings.TrimSuffix(v, "!")) + "NN"
-	}
-	if strings.HasPrefix(v, "[") && strings.HasSuffix(v, "]") {
-		return toTypeName(strings.TrimSuffix(strings.TrimPrefix(v, "["), "]")) + "Array"
-	}
-	return v
+func desc(text string) schema.Description {
+	return schema.NewDescription(strings.TrimSpace(text))
 }
