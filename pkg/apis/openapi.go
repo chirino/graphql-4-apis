@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 )
 
 func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.Swagger, error) {
@@ -43,6 +44,13 @@ func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.Swagger, error
 		err := json.Unmarshal(data, &swagger2)
 		if err != nil {
 			return nil, errors.WithStack(err)
+		}
+
+		// Apply some sanitization to streamline conversions.
+		for _, scheme := range swagger2.SecurityDefinitions {
+			if scheme.Type == "oauth2" {
+				scheme.Flow = strings.ToLower(scheme.Flow)
+			}
 		}
 
 		apiDoc, err := openapi2conv.ToV3Swagger(&swagger2)
