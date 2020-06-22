@@ -2,11 +2,13 @@ package apis
 
 import (
 	errors "errors"
-	"github.com/chirino/graphql"
-	"github.com/chirino/graphql/resolvers"
-	"io"
 	"net/http"
 	"os"
+
+	"log"
+
+	"github.com/chirino/graphql"
+	"github.com/chirino/graphql/resolvers"
 )
 
 // EndpointOptions defines how to access an endpoint URL
@@ -27,7 +29,7 @@ type Config struct {
 	APIBase      EndpointOptions `json:"api,omitempty",yaml:"api,omitempty"`
 	QueryType    string
 	MutationType string
-	Logs         io.Writer
+	Log          *log.Logger
 }
 
 func CreateGatewayEngine(option Config) (*graphql.Engine, error) {
@@ -35,10 +37,11 @@ func CreateGatewayEngine(option Config) (*graphql.Engine, error) {
 	o := Config{
 		QueryType:    "Query",
 		MutationType: "Mutation",
-		Logs:         os.Stderr,
 	}
-	if option.Logs != nil {
-		o.Logs = option.Logs
+	if option.Log != nil {
+		o.Log = option.Log
+	} else {
+		o.Log = log.New(os.Stderr, "graphql-4-apis: ", 0)
 	}
 	if option.QueryType != "" {
 		o.QueryType = option.QueryType

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"testing"
@@ -26,7 +27,7 @@ func TestExampleOasAPI(t *testing.T) {
 		APIBase: apis.EndpointOptions{
 			URL: "http://localhost:8080/api",
 		},
-		Logs: ioutil.Discard,
+		Log: log.New(ioutil.Discard, "", 0),
 	})
 	require.NoError(t, err)
 	err = engine.Schema.Parse(`

@@ -2,6 +2,7 @@ package apis_test
 
 import (
 	"io/ioutil"
+	"log"
 	"testing"
 
 	"github.com/chirino/graphql-4-apis/pkg/apis"
@@ -17,7 +18,7 @@ func TestLoadKubernetesAPI(t *testing.T) {
 			URL:    "http://fake:8080",
 			ApiKey: "fake",
 		},
-		Logs: ioutil.Discard,
+		Log: log.New(ioutil.Discard, "", 0),
 	})
 	require.NoError(t, err)
 

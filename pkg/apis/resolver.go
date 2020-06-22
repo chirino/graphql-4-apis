@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"reflect"
 	"sort"
 	"strconv"
@@ -78,11 +77,7 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 		}
 	}
 
-	if resolver.options.Logs == nil {
-		resolver.options.Logs = os.Stderr
-	}
 	queryMethods := map[string]bool{"GET": true, "HEAD": true}
-
 	draft := schema.New()
 
 	// Lets index all the operations.. needed later when looking up operation due to links.
@@ -110,12 +105,12 @@ func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolv
 			if queryMethods[method] {
 				err := resolver.addRootField(draft, options.QueryType, operation, refCache, method, path, operationsById)
 				if err != nil {
-					fmt.Fprintf(resolver.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
+					resolver.options.Log.Printf("could not map api endpoint '%s %s': %s", method, path, err)
 				}
 			} else {
 				err := resolver.addRootField(draft, options.MutationType, operation, refCache, method, path, operationsById)
 				if err != nil {
-					fmt.Fprintf(resolver.options.Logs, "could not map api endpoint '%s %s': %s\n", method, path, err)
+					resolver.options.Log.Printf("could not map api endpoint '%s %s': %s", method, path, err)
 				}
 			}
 		}
@@ -170,7 +165,7 @@ func (factory apiResolver) addRootField(draft *schema.Schema, rootType string, o
 	}
 
 	if rootObject.Fields.Get(fieldName) != nil {
-		fmt.Fprintf(factory.options.Logs, "field already exists: %s", fieldName)
+		factory.options.Log.Printf("field already exists: %s", fieldName)
 		return nil
 	}
 
@@ -178,7 +173,7 @@ func (factory apiResolver) addRootField(draft *schema.Schema, rootType string, o
 
 	qlType, status, err := factory.getOperationResponseType(draft, operation, rootType, fieldName, typePath, refCache, operationsById)
 	if err != nil {
-		fmt.Fprintf(factory.options.Logs, err.Error())
+		factory.options.Log.Println(err.Error())
 		return nil
 	}
 
@@ -194,7 +189,7 @@ func (factory apiResolver) addRootField(draft *schema.Schema, rootType string, o
 		if content != nil {
 			fieldType, err := factory.addGraphQLType(draft, content.Schema, typePath+"/body", refCache, true)
 			if err != nil {
-				fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: required parameter '%s' type cannot be converted: %s\n", rootType, fieldName, "body", err)
+				factory.options.Log.Printf("dropping %s.%s field: required parameter '%s' type cannot be converted: %s", rootType, fieldName, "body", err)
 				return nil
 			}
 
@@ -219,10 +214,10 @@ func (factory apiResolver) addRootField(draft *schema.Schema, rootType string, o
 			fieldType, err := factory.addGraphQLType(draft, getSchema(param.Value), fmt.Sprintf("%s/Arg/%d", typePath, i), refCache, true)
 			if err != nil {
 				if param.Value.Required {
-					fmt.Fprintf(factory.options.Logs, "dropping %s.%s field: required parameter '%s' type cannot be converted: %s\n", rootType, fieldName, param.Value.Name, err)
+					factory.options.Log.Printf("dropping %s.%s field: required parameter '%s' type cannot be converted: %s", rootType, fieldName, param.Value.Name, err)
 					return nil
 				} else {
-					fmt.Fprintf(factory.options.Logs, "dropping optional %s.%s field parameter: parameter '%s' type cannot be converted: %s\n", rootType, fieldName, param.Value.Name, err)
+					factory.options.Log.Printf("dropping optional %s.%s field parameter: parameter '%s' type cannot be converted: %s", rootType, fieldName, param.Value.Name, err)
 					continue
 				}
 			}
@@ -248,21 +243,21 @@ func (factory apiResolver) getOperationResponseType(draft *schema.Schema, operat
 	for statusText, response := range operation.Responses {
 		status, err := strconv.Atoi(statusText)
 		if err != nil {
-			fmt.Fprintf(factory.options.Logs, "skipping %s.%s field respose, not an integer: %s\n", rootType, fieldName, statusText)
+			factory.options.Log.Printf("skipping %s.%s field respose, not an integer: %s", rootType, fieldName, statusText)
 		}
 		content := response.Value.Content.Get("application/json")
 		if strings.HasPrefix(statusText, "2") && content != nil {
 
 			qlType, err := factory.addGraphQLType(draft, content.Schema, fmt.Sprintf("%s/DefaultResponse", typePath), refCache, false)
 			if err != nil {
-				return nil, nil, errors.Errorf("dropping %s.%s field: result type cannot be converted: %s\n", rootType, fieldName, err)
+				return nil, nil, errors.Errorf("dropping %s.%s field: result type cannot be converted: %s", rootType, fieldName, err)
 			}
 
 			if response.Value.Links != nil {
 				for field, link := range response.Value.Links {
 					err := factory.addLink(draft, qlType.(*schema.Object), field, typePath+"/"+field, link, operationsById, refCache)
 					if err != nil {
-						return nil, nil, errors.Errorf("dropping %s.%s link field: result type cannot be converted: %s\n", rootType, field, err)
+						return nil, nil, errors.Errorf("dropping %s.%s link field: result type cannot be converted: %s", rootType, field, err)
 					}
 				}
 			}
@@ -278,13 +273,13 @@ func (factory apiResolver) getOperationResponseType(draft *schema.Schema, operat
 
 	switch len(responseTypesToStatus) {
 	case 0:
-		return nil, nil, errors.Errorf("dropping %s.%s field: graphql result type could not be determined\n", rootType, fieldName)
+		return nil, nil, errors.Errorf("dropping %s.%s field: graphql result type could not be determined", rootType, fieldName)
 	case 1:
 		for qlType, status := range responseTypesToStatus {
 			return qlType, status, nil
 		}
 	}
-	return nil, nil, errors.Errorf("dropping %s.%s field: graphql multiple result types not yet supported\n", rootType, fieldName)
+	return nil, nil, errors.Errorf("dropping %s.%s field: graphql multiple result types not yet supported", rootType, fieldName)
 }
 
 func getSchema(value *openapi3.Parameter) *openapi3.SchemaRef {
@@ -385,7 +380,8 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 			return nil, err
 		}
 		return &schema.List{OfType: nestedType}, nil
-	case "object":
+
+	default: // Assume it's an object.
 
 		if len(sf.Value.Properties) == 0 && sf.Value.AdditionalProperties != nil {
 			nestedType, err := factory.addGraphQLType(draft, sf.Value.AdditionalProperties, path, refCache, inputType)
@@ -434,7 +430,7 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 
 			fieldType, err := factory.addGraphQLType(draft, ref, path+"/"+capitalizeFirstLetter(name), refCache, inputType)
 			if err != nil {
-				fmt.Fprintf(factory.options.Logs, "dropping openapi field '%s' from graphql type '%s': %s\n", name, typeName, err)
+				factory.options.Log.Printf("dropping openapi field '%s' from graphql type '%s': %s", name, typeName, err)
 				continue
 			}
 			if inputType {
@@ -471,9 +467,6 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 		}
 
 		return t, nil
-
-	default:
-		return nil, errors.New(fmt.Sprintf("cannot convert to a graphql type '%s' ", sf.Value.Type))
 	}
 
 }

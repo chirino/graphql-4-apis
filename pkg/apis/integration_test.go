@@ -3,6 +3,7 @@ package apis_test
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"os"
 	"testing"
 
@@ -26,7 +27,7 @@ func TestWeatherDotCom(t *testing.T) {
 		APIBase: apis.EndpointOptions{
 			ApiKey: apiKey,
 		},
-		Logs: ioutil.Discard,
+		Log: log.New(ioutil.Discard, "", 0),
 	})
 	require.NoError(t, err)
 	err = engine.Schema.Parse(`

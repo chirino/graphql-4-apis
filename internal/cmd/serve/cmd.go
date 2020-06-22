@@ -54,7 +54,7 @@ func run(_ *cobra.Command, _ []string) {
 	config.MutationType = `MutationApi`
 
 	if !root.Verbose {
-		config.Logs = ioutil.Discard
+		config.Log = log.New(ioutil.Discard, "", 0)
 	}
 
 	engine, err := apis.CreateGatewayEngine(config.Config)
