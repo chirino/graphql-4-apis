@@ -69,3 +69,30 @@ func TestNoContent(t *testing.T) {
 	require.NoError(t, err)
 	assert.JSONEq(t, `{"noresult":""}`, result)
 }
+
+func TestAllOf(t *testing.T) {
+
+	testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		res.WriteHeader(200)
+		res.Write([]byte(`{"age":21}`))
+	}))
+	defer func() { testServer.Close() }()
+
+	engine, err := apis.CreateGatewayEngine(apis.Config{
+		Openapi: apis.EndpointOptions{
+			URL: "testdata/allOf.json",
+		},
+		APIBase: apis.EndpointOptions{
+			URL: testServer.URL,
+		},
+	})
+	require.NoError(t, err)
+
+	//fmt.Println(engine.Schema)
+
+	cxt := context.Background()
+	result := ""
+	err = engine.Exec(cxt, &result, `mutation{ action { age } }`)
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"action":{"age":21}}`, result)
+}

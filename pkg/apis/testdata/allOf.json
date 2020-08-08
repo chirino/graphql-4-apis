@@ -1,0 +1,64 @@
+{
+  "swagger": "2.0",
+  "paths": {
+    "/process": {
+      "post": {
+        "description": "example operation",
+        "produces": [
+          "application/json"
+        ],
+        "operationId": "action",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Travesty"
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "Dog": {
+      "properties": {
+        "bark": {
+          "type": "boolean"
+        },
+        "breed": {
+          "type": "string"
+        }
+      }
+    },
+    "Cat": {
+      "properties": {
+        "hunts": {
+          "type": "boolean"
+        },
+        "age": {
+          "type": "integer"
+        }
+      }
+    },
+
+    "Travesty": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/Dog"
+        },
+        {
+          "$ref": "#/components/schemas/Cat"
+        },
+        {
+          "properties": {
+            "weight": {
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        }
+      ]
+    }
+  }
+}

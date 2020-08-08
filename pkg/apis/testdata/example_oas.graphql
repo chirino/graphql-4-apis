@@ -28,7 +28,11 @@ type Mutation_PostScanner_DefaultResponseResult {
   body:String
 }
 input Mutation_PostUser_body_NomenclatureInput {
+  family:String
+  familyCircular:familyObjectInput
+  genus:String
   species:String
+  suborder:String
 }
 "An empty result"
 scalar NO_CONTENT
@@ -157,8 +161,12 @@ type Query_GetProductReviews_DefaultResponseResult {
 type Query_GetScanner_DefaultResponseResult {
   body:String
 }
-type Query_GetUserByUsername_DefaultResponse_NomenclatureResult {
+type Query_GetUsers_DefaultResponse_NomenclatureResult {
+  family:String
+  familyCircular:familyObjectResult
+  genus:String
   species:String
+  suborder:String
 }
 "A property entry"
 type StringResultProp {
@@ -207,6 +215,14 @@ type companyResult {
 type coordinatesResult {
   lat:Float
   long:Float
+}
+input familyObjectInput {
+  family:String
+  familyCircular:familyObjectInput
+}
+type familyObjectResult {
+  family:String
+  familyCircular:familyObjectResult
 }
 "An office"
 type officeResult {
@@ -297,7 +313,7 @@ type userResult {
   hobbies:[String]
   "The legal name of a user"
   name:String
-  nomenclature:Query_GetUserByUsername_DefaultResponse_NomenclatureResult
+  nomenclature:Query_GetUsers_DefaultResponse_NomenclatureResult
 }
 schema {
   mutation: Mutation

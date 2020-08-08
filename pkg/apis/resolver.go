@@ -437,29 +437,7 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 		// In case a type is recursive.. lets stick it in the cache now before we try to resolve it's fields..
 		draft.Types[typeName] = t
 
-		for name, ref := range sf.Value.Properties {
-
-			fieldType, err := factory.addGraphQLType(draft, ref, path+"/"+capitalizeFirstLetter(name), refCache, inputType)
-			if err != nil {
-				factory.options.Log.Printf("dropping openapi field '%s' from graphql type '%s': %s", name, typeName, err)
-				continue
-			}
-			if inputType {
-				object := t.(*schema.InputObject)
-				object.Fields = append(object.Fields, &schema.InputValue{
-					Desc: desc(ref.Value.Description),
-					Name: sanitizeName(name),
-					Type: fieldType,
-				})
-			} else {
-				object := t.(*schema.Object)
-				object.Fields = append(object.Fields, &schema.Field{
-					Desc: desc(ref.Value.Description),
-					Name: sanitizeName(name),
-					Type: fieldType,
-				})
-			}
-		}
+		factory.addProperties(sf.Value, draft, path, refCache, inputType, typeName, t)
 
 		if inputType {
 			object := t.(*schema.InputObject)
@@ -480,6 +458,35 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 		return t, nil
 	}
 
+}
+
+func (factory apiResolver) addProperties(s *openapi3.Schema, draft *schema.Schema, path string, refCache map[string]interface{}, inputType bool, typeName string, t interface{}) {
+	for _, sf := range s.AllOf {
+		factory.addProperties(sf.Value, draft, path, refCache, inputType, typeName, t)
+	}
+	for name, ref := range s.Properties {
+
+		fieldType, err := factory.addGraphQLType(draft, ref, path+"/"+capitalizeFirstLetter(name), refCache, inputType)
+		if err != nil {
+			factory.options.Log.Printf("dropping openapi field '%s' from graphql type '%s': %s", name, typeName, err)
+			continue
+		}
+		if inputType {
+			object := t.(*schema.InputObject)
+			object.Fields = append(object.Fields, &schema.InputValue{
+				Desc: desc(ref.Value.Description),
+				Name: sanitizeName(name),
+				Type: fieldType,
+			})
+		} else {
+			object := t.(*schema.Object)
+			object.Fields = append(object.Fields, &schema.Field{
+				Desc: desc(ref.Value.Description),
+				Name: sanitizeName(name),
+				Type: fieldType,
+			})
+		}
+	}
 }
 
 func (factory *apiResolver) addPropWrapper(draft *schema.Schema, nestedType schema.Type, inputType bool) (schema.NamedType, error) {
