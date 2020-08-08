@@ -236,6 +236,14 @@ func (factory apiResolver) resolve(gqlRequest *resolvers.ResolveRequest, operati
 
 		for _, expected := range expectedStatus {
 			if expected == resp.StatusCode {
+
+				opResponse := operation.Responses.Get(resp.StatusCode)
+
+				// Handle to NO_CONTENT case...
+				if opResponse.Value.Content == nil {
+					return reflect.ValueOf(""), nil
+				}
+
 				var result interface{}
 				err := json.NewDecoder(resp.Body).Decode(&result)
 				if err != nil {

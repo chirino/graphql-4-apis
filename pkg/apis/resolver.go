@@ -245,28 +245,39 @@ func (factory apiResolver) getOperationResponseType(draft *schema.Schema, operat
 		if err != nil {
 			factory.options.Log.Printf("skipping %s.%s field respose, not an integer: %s", rootType, fieldName, statusText)
 		}
-		content := response.Value.Content.Get("application/json")
-		if strings.HasPrefix(statusText, "2") && content != nil {
+		if strings.HasPrefix(statusText, "2") {
+			var qlType schema.Type = nil
+			if response.Value.Content == nil {
+				qlType = factory.NoContentType(draft)
+			} else {
 
-			qlType, err := factory.addGraphQLType(draft, content.Schema, fmt.Sprintf("%s/DefaultResponse", typePath), refCache, false)
-			if err != nil {
-				return nil, nil, errors.Errorf("dropping %s.%s field: result type cannot be converted: %s", rootType, fieldName, err)
-			}
+				content := response.Value.Content.Get("application/json")
+				if content != nil {
 
-			if response.Value.Links != nil {
-				for field, link := range response.Value.Links {
-					err := factory.addLink(draft, qlType.(*schema.Object), field, typePath+"/"+field, link, operationsById, refCache)
+					qlType, err = factory.addGraphQLType(draft, content.Schema, fmt.Sprintf("%s/DefaultResponse", typePath), refCache, false)
 					if err != nil {
-						return nil, nil, errors.Errorf("dropping %s.%s link field: result type cannot be converted: %s", rootType, field, err)
+						return nil, nil, errors.Errorf("dropping %s.%s field: result type cannot be converted: %s", rootType, fieldName, err)
+					}
+
+					if response.Value.Links != nil {
+						for field, link := range response.Value.Links {
+							err := factory.addLink(draft, qlType.(*schema.Object), field, typePath+"/"+field, link, operationsById, refCache)
+							if err != nil {
+								return nil, nil, errors.Errorf("dropping %s.%s link field: result type cannot be converted: %s", rootType, field, err)
+							}
+						}
 					}
 				}
+
 			}
 
-			statuses := responseTypesToStatus[qlType]
-			if statuses == nil {
-				responseTypesToStatus[qlType] = []int{status}
-			} else {
-				responseTypesToStatus[qlType] = append(statuses, status)
+			if qlType != nil {
+				statuses := responseTypesToStatus[qlType]
+				if statuses == nil {
+					responseTypesToStatus[qlType] = []int{status}
+				} else {
+					responseTypesToStatus[qlType] = append(statuses, status)
+				}
 			}
 		}
 	}
@@ -570,6 +581,19 @@ func (factory *apiResolver) addPropWrapper(draft *schema.Schema, nestedType sche
 
 	draft.Types[graphType.TypeName()] = graphType
 	return graphType, nil
+}
+
+func (factory *apiResolver) NoContentType(draft *schema.Schema) schema.Type {
+	t := draft.Types["NO_CONTENT"]
+	if t == nil {
+		t = &schema.Scalar{
+			Name:       "NO_CONTENT",
+			Desc:       desc("An empty result"),
+			Directives: nil,
+		}
+		draft.Types["NO_CONTENT"] = t
+	}
+	return t
 }
 
 func desc(text string) schema.Description {

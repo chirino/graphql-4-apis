@@ -30,6 +30,8 @@ type Mutation_PostScanner_DefaultResponseResult {
 input Mutation_PostUser_body_NomenclatureInput {
   species:String
 }
+"An empty result"
+scalar NO_CONTENT
 type Query {
   """
     Returns information about all employee cars
@@ -37,6 +39,12 @@ type Query {
     **endpoint:** `GET /cars`
     """
   getAllCars:[carResult]
+  """
+    Used to test empty responses
+    
+    **endpoint:** `GET /bonuses`
+    """
+  getBonuses:NO_CONTENT
   """
     Returns the profile of a company with the given ID.
     
@@ -149,7 +157,7 @@ type Query_GetProductReviews_DefaultResponseResult {
 type Query_GetScanner_DefaultResponseResult {
   body:String
 }
-type Query_GetUserFriends_DefaultResponse_NomenclatureResult {
+type Query_GetUserByUsername_DefaultResponse_NomenclatureResult {
   species:String
 }
 "A property entry"
@@ -289,7 +297,7 @@ type userResult {
   hobbies:[String]
   "The legal name of a user"
   name:String
-  nomenclature:Query_GetUserFriends_DefaultResponse_NomenclatureResult
+  nomenclature:Query_GetUserByUsername_DefaultResponse_NomenclatureResult
 }
 schema {
   mutation: Mutation

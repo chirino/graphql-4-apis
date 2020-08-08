@@ -45,3 +45,27 @@ func TestAdditionProperties(t *testing.T) {
 	require.NoError(t, err)
 	assert.JSONEq(t, `{"action":[{"key":"a","value":["2"]},{"key":"b","value":["4"]}]}`, result)
 }
+
+func TestNoContent(t *testing.T) {
+
+	testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		res.WriteHeader(200)
+	}))
+	defer func() { testServer.Close() }()
+
+	engine, err := apis.CreateGatewayEngine(apis.Config{
+		Openapi: apis.EndpointOptions{
+			URL: "testdata/nocontent.json",
+		},
+		APIBase: apis.EndpointOptions{
+			URL: testServer.URL,
+		},
+	})
+	require.NoError(t, err)
+
+	cxt := context.Background()
+	result := ""
+	err = engine.Exec(cxt, &result, `mutation{ noresult }`)
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"noresult":""}`, result)
+}
