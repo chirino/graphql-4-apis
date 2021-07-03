@@ -2,11 +2,11 @@ package apis
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"github.com/getkin/kin-openapi/openapi2"
 	"github.com/getkin/kin-openapi/openapi2conv"
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
@@ -27,7 +27,7 @@ func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.T, error) {
 		OpenAPI string `json:"openapi,omitempty"`
 	}{}
 
-	err = json.Unmarshal(data, &doc)
+	err = yaml.Unmarshal(data, &doc)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not detect openapi version")
 	}
@@ -40,17 +40,10 @@ func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.T, error) {
 	if doc.Swagger != "" || doc.OpenAPI == "" {
 		// Lets load it up as openapi v2 and convert to v3
 		var swagger2 openapi2.T
-		err := json.Unmarshal(data, &swagger2)
+		err := yaml.Unmarshal(data, &swagger2)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
-
-		// Apply some sanitization to streamline conversions.
-		//for _, scheme := range swagger2.SecurityDefinitions {
-		//	if scheme.Type == "oauth2" {
-		//		scheme.Flow = strings.ToLower(scheme.Flow)
-		//	}
-		//}
 
 		apiDoc, err := openapi2conv.ToV3(&swagger2)
 		if err != nil {
@@ -115,6 +108,10 @@ func enrichApiDoc(doc *openapi3.T) {
 }
 
 func readURL(endpointOptions EndpointOptions) ([]byte, error) {
+	if len(endpointOptions.OpenapiDocument) != 0 {
+		return endpointOptions.OpenapiDocument, nil
+	}
+
 	location, err := url.Parse(endpointOptions.URL)
 	if err != nil {
 		return nil, err

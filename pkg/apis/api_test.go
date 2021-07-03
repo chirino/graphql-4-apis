@@ -70,6 +70,33 @@ func TestNoContent(t *testing.T) {
 	assert.JSONEq(t, `{"noresult":""}`, result)
 }
 
+func Test_EndpointOptions_OpenapiDocument(t *testing.T) {
+
+	testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		res.WriteHeader(200)
+	}))
+	defer func() { testServer.Close() }()
+
+	nocontentData, err := ioutil.ReadFile("testdata/nocontent.json")
+	require.NoError(t, err)
+
+	engine, err := apis.CreateGatewayEngine(apis.Config{
+		Openapi: apis.EndpointOptions{
+			OpenapiDocument: nocontentData,
+		},
+		APIBase: apis.EndpointOptions{
+			URL: testServer.URL,
+		},
+	})
+	require.NoError(t, err)
+
+	cxt := context.Background()
+	result := ""
+	err = engine.Exec(cxt, &result, `mutation{ noresult }`)
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"noresult":""}`, result)
+}
+
 func TestAllOf(t *testing.T) {
 
 	testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
