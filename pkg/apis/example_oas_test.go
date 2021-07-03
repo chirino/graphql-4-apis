@@ -38,7 +38,7 @@ func TestExampleOasAPI(t *testing.T) {
     `)
 
 	actual := engine.Schema.String()
-	ioutil.WriteFile("testdata/example_oas.graphql", []byte(actual), 0644)
+	//ioutil.WriteFile("testdata/example_oas.graphql", []byte(actual), 0644)
 
 	file, err := ioutil.ReadFile("testdata/example_oas.graphql")
 	require.NoError(t, err)

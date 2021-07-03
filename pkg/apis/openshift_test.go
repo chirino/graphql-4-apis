@@ -29,5 +29,5 @@ func TestLoadOpenshiftAPI(t *testing.T) {
 	require.NoError(t, err)
 	expected := string(file)
 
-	require.Equal(t, actual, expected)
+	AssertEquals(t, expected, actual)
 }

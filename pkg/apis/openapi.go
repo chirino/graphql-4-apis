@@ -12,10 +12,9 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"strings"
 )
 
-func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.Swagger, error) {
+func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.T, error) {
 
 	var data, err = readURL(docLocation)
 	if err != nil {
@@ -40,25 +39,25 @@ func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.Swagger, error
 
 	if doc.Swagger != "" || doc.OpenAPI == "" {
 		// Lets load it up as openapi v2 and convert to v3
-		var swagger2 openapi2.Swagger
+		var swagger2 openapi2.T
 		err := json.Unmarshal(data, &swagger2)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 
 		// Apply some sanitization to streamline conversions.
-		for _, scheme := range swagger2.SecurityDefinitions {
-			if scheme.Type == "oauth2" {
-				scheme.Flow = strings.ToLower(scheme.Flow)
-			}
-		}
+		//for _, scheme := range swagger2.SecurityDefinitions {
+		//	if scheme.Type == "oauth2" {
+		//		scheme.Flow = strings.ToLower(scheme.Flow)
+		//	}
+		//}
 
-		apiDoc, err := openapi2conv.ToV3Swagger(&swagger2)
+		apiDoc, err := openapi2conv.ToV3(&swagger2)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 
-		err = openapi3.NewSwaggerLoader().ResolveRefsIn(apiDoc, location)
+		err = openapi3.NewLoader().ResolveRefsIn(apiDoc, location)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
@@ -66,7 +65,7 @@ func LoadOpenApiV2orV3Doc(docLocation EndpointOptions) (*openapi3.Swagger, error
 		return apiDoc, nil
 	} else {
 		// It should be a v3 document already..
-		apiDoc, err := openapi3.NewSwaggerLoader().LoadSwaggerFromDataWithPath(data, location)
+		apiDoc, err := openapi3.NewLoader().LoadFromDataWithPath(data, location)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
@@ -81,7 +80,7 @@ var pathVariableRegex = regexp.MustCompile("{(.+?)}")
 // enrichApiDoc does some pre-processing of the API document to make them more consistent:
 // 1: Creates a operation parameter for path parameter if it's missing.
 //
-func enrichApiDoc(doc *openapi3.Swagger) {
+func enrichApiDoc(doc *openapi3.T) {
 	// Lets make sure there are path parameters defined for the path variable bits..
 	for path, v := range doc.Paths {
 		for _, operation := range v.Operations() {

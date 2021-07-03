@@ -4163,6 +4163,1189 @@ type Mutation {
     propagationPolicy:String, name:String!
   ):io_k8s_apimachinery_pkg_apis_meta_v1_StatusResult
   """
+    partially update the specified MutatingWebhookConfiguration
+    
+    **endpoint:** `PATCH /apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations/{name}`
+    """
+  patchAdmissionregistrationV1MutatingWebhookConfiguration(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_admissionregistration_v1_MutatingWebhookConfigurationResult
+  """
+    partially update the specified ValidatingWebhookConfiguration
+    
+    **endpoint:** `PATCH /apis/admissionregistration.k8s.io/v1/validatingwebhookconfigurations/{name}`
+    """
+  patchAdmissionregistrationV1ValidatingWebhookConfiguration(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_admissionregistration_v1_ValidatingWebhookConfigurationResult
+  """
+    partially update the specified MutatingWebhookConfiguration
+    
+    **endpoint:** `PATCH /apis/admissionregistration.k8s.io/v1beta1/mutatingwebhookconfigurations/{name}`
+    """
+  patchAdmissionregistrationV1beta1MutatingWebhookConfiguration(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_admissionregistration_v1beta1_MutatingWebhookConfigurationResult
+  """
+    partially update the specified ValidatingWebhookConfiguration
+    
+    **endpoint:** `PATCH /apis/admissionregistration.k8s.io/v1beta1/validatingwebhookconfigurations/{name}`
+    """
+  patchAdmissionregistrationV1beta1ValidatingWebhookConfiguration(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_admissionregistration_v1beta1_ValidatingWebhookConfigurationResult
+  """
+    partially update the specified CustomResourceDefinition
+    
+    **endpoint:** `PATCH /apis/apiextensions.k8s.io/v1/customresourcedefinitions/{name}`
+    """
+  patchApiextensionsV1CustomResourceDefinition(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceDefinitionResult
+  """
+    partially update status of the specified CustomResourceDefinition
+    
+    **endpoint:** `PATCH /apis/apiextensions.k8s.io/v1/customresourcedefinitions/{name}/status`
+    """
+  patchApiextensionsV1CustomResourceDefinitionStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceDefinitionResult
+  """
+    partially update the specified CustomResourceDefinition
+    
+    **endpoint:** `PATCH /apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}`
+    """
+  patchApiextensionsV1beta1CustomResourceDefinition(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourceDefinitionResult
+  """
+    partially update status of the specified CustomResourceDefinition
+    
+    **endpoint:** `PATCH /apis/apiextensions.k8s.io/v1beta1/customresourcedefinitions/{name}/status`
+    """
+  patchApiextensionsV1beta1CustomResourceDefinitionStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourceDefinitionResult
+  """
+    partially update the specified APIService
+    
+    **endpoint:** `PATCH /apis/apiregistration.k8s.io/v1/apiservices/{name}`
+    """
+  patchApiregistrationV1APIService(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_kube_aggregator_pkg_apis_apiregistration_v1_APIServiceResult
+  """
+    partially update status of the specified APIService
+    
+    **endpoint:** `PATCH /apis/apiregistration.k8s.io/v1/apiservices/{name}/status`
+    """
+  patchApiregistrationV1APIServiceStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_kube_aggregator_pkg_apis_apiregistration_v1_APIServiceResult
+  """
+    partially update the specified APIService
+    
+    **endpoint:** `PATCH /apis/apiregistration.k8s.io/v1beta1/apiservices/{name}`
+    """
+  patchApiregistrationV1beta1APIService(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_kube_aggregator_pkg_apis_apiregistration_v1beta1_APIServiceResult
+  """
+    partially update status of the specified APIService
+    
+    **endpoint:** `PATCH /apis/apiregistration.k8s.io/v1beta1/apiservices/{name}/status`
+    """
+  patchApiregistrationV1beta1APIServiceStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_kube_aggregator_pkg_apis_apiregistration_v1beta1_APIServiceResult
+  """
+    partially update the specified ControllerRevision
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/controllerrevisions/{name}`
+    """
+  patchAppsV1NamespacedControllerRevision(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_ControllerRevisionResult
+  """
+    partially update the specified DaemonSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/daemonsets/{name}`
+    """
+  patchAppsV1NamespacedDaemonSet(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_DaemonSetResult
+  """
+    partially update status of the specified DaemonSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/daemonsets/{name}/status`
+    """
+  patchAppsV1NamespacedDaemonSetStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_DaemonSetResult
+  """
+    partially update the specified Deployment
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/deployments/{name}`
+    """
+  patchAppsV1NamespacedDeployment(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_DeploymentResult
+  """
+    partially update scale of the specified Deployment
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/deployments/{name}/scale`
+    """
+  patchAppsV1NamespacedDeploymentScale(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v1_ScaleResult
+  """
+    partially update status of the specified Deployment
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/deployments/{name}/status`
+    """
+  patchAppsV1NamespacedDeploymentStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_DeploymentResult
+  """
+    partially update the specified ReplicaSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/replicasets/{name}`
+    """
+  patchAppsV1NamespacedReplicaSet(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_ReplicaSetResult
+  """
+    partially update scale of the specified ReplicaSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/replicasets/{name}/scale`
+    """
+  patchAppsV1NamespacedReplicaSetScale(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v1_ScaleResult
+  """
+    partially update status of the specified ReplicaSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/replicasets/{name}/status`
+    """
+  patchAppsV1NamespacedReplicaSetStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_ReplicaSetResult
+  """
+    partially update the specified StatefulSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/statefulsets/{name}`
+    """
+  patchAppsV1NamespacedStatefulSet(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_StatefulSetResult
+  """
+    partially update scale of the specified StatefulSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/statefulsets/{name}/scale`
+    """
+  patchAppsV1NamespacedStatefulSetScale(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v1_ScaleResult
+  """
+    partially update status of the specified StatefulSet
+    
+    **endpoint:** `PATCH /apis/apps/v1/namespaces/{namespace}/statefulsets/{name}/status`
+    """
+  patchAppsV1NamespacedStatefulSetStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_apps_v1_StatefulSetResult
+  """
+    partially update the specified HorizontalPodAutoscaler
+    
+    **endpoint:** `PATCH /apis/autoscaling/v1/namespaces/{namespace}/horizontalpodautoscalers/{name}`
+    """
+  patchAutoscalingV1NamespacedHorizontalPodAutoscaler(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v1_HorizontalPodAutoscalerResult
+  """
+    partially update status of the specified HorizontalPodAutoscaler
+    
+    **endpoint:** `PATCH /apis/autoscaling/v1/namespaces/{namespace}/horizontalpodautoscalers/{name}/status`
+    """
+  patchAutoscalingV1NamespacedHorizontalPodAutoscalerStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v1_HorizontalPodAutoscalerResult
+  """
+    partially update the specified HorizontalPodAutoscaler
+    
+    **endpoint:** `PATCH /apis/autoscaling/v2beta1/namespaces/{namespace}/horizontalpodautoscalers/{name}`
+    """
+  patchAutoscalingV2beta1NamespacedHorizontalPodAutoscaler(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v2beta1_HorizontalPodAutoscalerResult
+  """
+    partially update status of the specified HorizontalPodAutoscaler
+    
+    **endpoint:** `PATCH /apis/autoscaling/v2beta1/namespaces/{namespace}/horizontalpodautoscalers/{name}/status`
+    """
+  patchAutoscalingV2beta1NamespacedHorizontalPodAutoscalerStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v2beta1_HorizontalPodAutoscalerResult
+  """
+    partially update the specified HorizontalPodAutoscaler
+    
+    **endpoint:** `PATCH /apis/autoscaling/v2beta2/namespaces/{namespace}/horizontalpodautoscalers/{name}`
+    """
+  patchAutoscalingV2beta2NamespacedHorizontalPodAutoscaler(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v2beta2_HorizontalPodAutoscalerResult
+  """
+    partially update status of the specified HorizontalPodAutoscaler
+    
+    **endpoint:** `PATCH /apis/autoscaling/v2beta2/namespaces/{namespace}/horizontalpodautoscalers/{name}/status`
+    """
+  patchAutoscalingV2beta2NamespacedHorizontalPodAutoscalerStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v2beta2_HorizontalPodAutoscalerResult
+  """
+    partially update the specified Job
+    
+    **endpoint:** `PATCH /apis/batch/v1/namespaces/{namespace}/jobs/{name}`
+    """
+  patchBatchV1NamespacedJob(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_batch_v1_JobResult
+  """
+    partially update status of the specified Job
+    
+    **endpoint:** `PATCH /apis/batch/v1/namespaces/{namespace}/jobs/{name}/status`
+    """
+  patchBatchV1NamespacedJobStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_batch_v1_JobResult
+  """
+    partially update the specified CronJob
+    
+    **endpoint:** `PATCH /apis/batch/v1beta1/namespaces/{namespace}/cronjobs/{name}`
+    """
+  patchBatchV1beta1NamespacedCronJob(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_batch_v1beta1_CronJobResult
+  """
+    partially update status of the specified CronJob
+    
+    **endpoint:** `PATCH /apis/batch/v1beta1/namespaces/{namespace}/cronjobs/{name}/status`
+    """
+  patchBatchV1beta1NamespacedCronJobStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_batch_v1beta1_CronJobResult
+  """
+    partially update the specified CertificateSigningRequest
+    
+    **endpoint:** `PATCH /apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}`
+    """
+  patchCertificatesV1beta1CertificateSigningRequest(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_certificates_v1beta1_CertificateSigningRequestResult
+  """
+    partially update status of the specified CertificateSigningRequest
+    
+    **endpoint:** `PATCH /apis/certificates.k8s.io/v1beta1/certificatesigningrequests/{name}/status`
+    """
+  patchCertificatesV1beta1CertificateSigningRequestStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_certificates_v1beta1_CertificateSigningRequestResult
+  """
+    partially update the specified Lease
+    
+    **endpoint:** `PATCH /apis/coordination.k8s.io/v1/namespaces/{namespace}/leases/{name}`
+    """
+  patchCoordinationV1NamespacedLease(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_coordination_v1_LeaseResult
+  """
+    partially update the specified Lease
+    
+    **endpoint:** `PATCH /apis/coordination.k8s.io/v1beta1/namespaces/{namespace}/leases/{name}`
+    """
+  patchCoordinationV1beta1NamespacedLease(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_coordination_v1beta1_LeaseResult
+  """
+    partially update the specified Namespace
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{name}`
+    """
+  patchCoreV1Namespace(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_core_v1_NamespaceResult
+  """
+    partially update status of the specified Namespace
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{name}/status`
+    """
+  patchCoreV1NamespaceStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_core_v1_NamespaceResult
+  """
+    partially update the specified ConfigMap
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/configmaps/{name}`
+    """
+  patchCoreV1NamespacedConfigMap(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ConfigMapResult
+  """
+    partially update the specified Endpoints
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/endpoints/{name}`
+    """
+  patchCoreV1NamespacedEndpoints(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_EndpointsResult
+  """
+    partially update the specified Event
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/events/{name}`
+    """
+  patchCoreV1NamespacedEvent(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_EventResult
+  """
+    partially update the specified LimitRange
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/limitranges/{name}`
+    """
+  patchCoreV1NamespacedLimitRange(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_LimitRangeResult
+  """
+    partially update the specified PersistentVolumeClaim
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}`
+    """
+  patchCoreV1NamespacedPersistentVolumeClaim(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_PersistentVolumeClaimResult
+  """
+    partially update status of the specified PersistentVolumeClaim
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}/status`
+    """
+  patchCoreV1NamespacedPersistentVolumeClaimStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_PersistentVolumeClaimResult
+  """
+    partially update the specified Pod
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/pods/{name}`
+    """
+  patchCoreV1NamespacedPod(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_PodResult
+  """
+    partially update status of the specified Pod
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/pods/{name}/status`
+    """
+  patchCoreV1NamespacedPodStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_PodResult
+  """
+    partially update the specified PodTemplate
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/podtemplates/{name}`
+    """
+  patchCoreV1NamespacedPodTemplate(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_PodTemplateResult
+  """
+    partially update the specified ReplicationController
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/replicationcontrollers/{name}`
+    """
+  patchCoreV1NamespacedReplicationController(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ReplicationControllerResult
+  """
+    partially update scale of the specified ReplicationController
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/replicationcontrollers/{name}/scale`
+    """
+  patchCoreV1NamespacedReplicationControllerScale(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_autoscaling_v1_ScaleResult
+  """
+    partially update status of the specified ReplicationController
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/replicationcontrollers/{name}/status`
+    """
+  patchCoreV1NamespacedReplicationControllerStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ReplicationControllerResult
+  """
+    partially update the specified ResourceQuota
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/resourcequotas/{name}`
+    """
+  patchCoreV1NamespacedResourceQuota(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ResourceQuotaResult
+  """
+    partially update status of the specified ResourceQuota
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/resourcequotas/{name}/status`
+    """
+  patchCoreV1NamespacedResourceQuotaStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ResourceQuotaResult
+  """
+    partially update the specified Secret
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/secrets/{name}`
+    """
+  patchCoreV1NamespacedSecret(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_SecretResult
+  """
+    partially update the specified Service
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/services/{name}`
+    """
+  patchCoreV1NamespacedService(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ServiceResult
+  """
+    partially update the specified ServiceAccount
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/serviceaccounts/{name}`
+    """
+  patchCoreV1NamespacedServiceAccount(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ServiceAccountResult
+  """
+    partially update status of the specified Service
+    
+    **endpoint:** `PATCH /api/v1/namespaces/{namespace}/services/{name}/status`
+    """
+  patchCoreV1NamespacedServiceStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_core_v1_ServiceResult
+  """
+    partially update the specified Node
+    
+    **endpoint:** `PATCH /api/v1/nodes/{name}`
+    """
+  patchCoreV1Node(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_core_v1_NodeResult
+  """
+    partially update status of the specified Node
+    
+    **endpoint:** `PATCH /api/v1/nodes/{name}/status`
+    """
+  patchCoreV1NodeStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_core_v1_NodeResult
+  """
+    partially update the specified PersistentVolume
+    
+    **endpoint:** `PATCH /api/v1/persistentvolumes/{name}`
+    """
+  patchCoreV1PersistentVolume(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_core_v1_PersistentVolumeResult
+  """
+    partially update status of the specified PersistentVolume
+    
+    **endpoint:** `PATCH /api/v1/persistentvolumes/{name}/status`
+    """
+  patchCoreV1PersistentVolumeStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_core_v1_PersistentVolumeResult
+  """
+    partially update the specified EndpointSlice
+    
+    **endpoint:** `PATCH /apis/discovery.k8s.io/v1beta1/namespaces/{namespace}/endpointslices/{name}`
+    """
+  patchDiscoveryV1beta1NamespacedEndpointSlice(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_discovery_v1beta1_EndpointSliceResult
+  """
+    partially update the specified Event
+    
+    **endpoint:** `PATCH /apis/events.k8s.io/v1beta1/namespaces/{namespace}/events/{name}`
+    """
+  patchEventsV1beta1NamespacedEvent(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_events_v1beta1_EventResult
+  """
+    partially update the specified Ingress
+    
+    **endpoint:** `PATCH /apis/extensions/v1beta1/namespaces/{namespace}/ingresses/{name}`
+    """
+  patchExtensionsV1beta1NamespacedIngress(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_extensions_v1beta1_IngressResult
+  """
+    partially update status of the specified Ingress
+    
+    **endpoint:** `PATCH /apis/extensions/v1beta1/namespaces/{namespace}/ingresses/{name}/status`
+    """
+  patchExtensionsV1beta1NamespacedIngressStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_extensions_v1beta1_IngressResult
+  """
+    partially update the specified NetworkPolicy
+    
+    **endpoint:** `PATCH /apis/networking.k8s.io/v1/namespaces/{namespace}/networkpolicies/{name}`
+    """
+  patchNetworkingV1NamespacedNetworkPolicy(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_networking_v1_NetworkPolicyResult
+  """
+    partially update the specified Ingress
+    
+    **endpoint:** `PATCH /apis/networking.k8s.io/v1beta1/namespaces/{namespace}/ingresses/{name}`
+    """
+  patchNetworkingV1beta1NamespacedIngress(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_networking_v1beta1_IngressResult
+  """
+    partially update status of the specified Ingress
+    
+    **endpoint:** `PATCH /apis/networking.k8s.io/v1beta1/namespaces/{namespace}/ingresses/{name}/status`
+    """
+  patchNetworkingV1beta1NamespacedIngressStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_networking_v1beta1_IngressResult
+  """
+    partially update the specified RuntimeClass
+    
+    **endpoint:** `PATCH /apis/node.k8s.io/v1beta1/runtimeclasses/{name}`
+    """
+  patchNodeV1beta1RuntimeClass(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_node_v1beta1_RuntimeClassResult
+  """
+    partially update the specified PodDisruptionBudget
+    
+    **endpoint:** `PATCH /apis/policy/v1beta1/namespaces/{namespace}/poddisruptionbudgets/{name}`
+    """
+  patchPolicyV1beta1NamespacedPodDisruptionBudget(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_policy_v1beta1_PodDisruptionBudgetResult
+  """
+    partially update status of the specified PodDisruptionBudget
+    
+    **endpoint:** `PATCH /apis/policy/v1beta1/namespaces/{namespace}/poddisruptionbudgets/{name}/status`
+    """
+  patchPolicyV1beta1NamespacedPodDisruptionBudgetStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_policy_v1beta1_PodDisruptionBudgetResult
+  """
+    partially update the specified PodSecurityPolicy
+    
+    **endpoint:** `PATCH /apis/policy/v1beta1/podsecuritypolicies/{name}`
+    """
+  patchPolicyV1beta1PodSecurityPolicy(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_policy_v1beta1_PodSecurityPolicyResult
+  """
+    partially update the specified ClusterRole
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1/clusterroles/{name}`
+    """
+  patchRbacAuthorizationV1ClusterRole(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_rbac_v1_ClusterRoleResult
+  """
+    partially update the specified ClusterRoleBinding
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/{name}`
+    """
+  patchRbacAuthorizationV1ClusterRoleBinding(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_rbac_v1_ClusterRoleBindingResult
+  """
+    partially update the specified Role
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1/namespaces/{namespace}/roles/{name}`
+    """
+  patchRbacAuthorizationV1NamespacedRole(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_rbac_v1_RoleResult
+  """
+    partially update the specified RoleBinding
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1/namespaces/{namespace}/rolebindings/{name}`
+    """
+  patchRbacAuthorizationV1NamespacedRoleBinding(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_rbac_v1_RoleBindingResult
+  """
+    partially update the specified ClusterRole
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1beta1/clusterroles/{name}`
+    """
+  patchRbacAuthorizationV1beta1ClusterRole(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_rbac_v1beta1_ClusterRoleResult
+  """
+    partially update the specified ClusterRoleBinding
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1beta1/clusterrolebindings/{name}`
+    """
+  patchRbacAuthorizationV1beta1ClusterRoleBinding(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_rbac_v1beta1_ClusterRoleBindingResult
+  """
+    partially update the specified Role
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1beta1/namespaces/{namespace}/roles/{name}`
+    """
+  patchRbacAuthorizationV1beta1NamespacedRole(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_rbac_v1beta1_RoleResult
+  """
+    partially update the specified RoleBinding
+    
+    **endpoint:** `PATCH /apis/rbac.authorization.k8s.io/v1beta1/namespaces/{namespace}/rolebindings/{name}`
+    """
+  patchRbacAuthorizationV1beta1NamespacedRoleBinding(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, namespace:String!, name:String!
+  ):io_k8s_api_rbac_v1beta1_RoleBindingResult
+  """
+    partially update the specified PriorityClass
+    
+    **endpoint:** `PATCH /apis/scheduling.k8s.io/v1/priorityclasses/{name}`
+    """
+  patchSchedulingV1PriorityClass(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_scheduling_v1_PriorityClassResult
+  """
+    partially update the specified PriorityClass
+    
+    **endpoint:** `PATCH /apis/scheduling.k8s.io/v1beta1/priorityclasses/{name}`
+    """
+  patchSchedulingV1beta1PriorityClass(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_scheduling_v1beta1_PriorityClassResult
+  """
+    partially update the specified CSINode
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1/csinodes/{name}`
+    """
+  patchStorageV1CSINode(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1_CSINodeResult
+  """
+    partially update the specified StorageClass
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1/storageclasses/{name}`
+    """
+  patchStorageV1StorageClass(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1_StorageClassResult
+  """
+    partially update the specified VolumeAttachment
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1/volumeattachments/{name}`
+    """
+  patchStorageV1VolumeAttachment(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1_VolumeAttachmentResult
+  """
+    partially update status of the specified VolumeAttachment
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1/volumeattachments/{name}/status`
+    """
+  patchStorageV1VolumeAttachmentStatus(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1_VolumeAttachmentResult
+  """
+    partially update the specified CSIDriver
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1beta1/csidrivers/{name}`
+    """
+  patchStorageV1beta1CSIDriver(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1beta1_CSIDriverResult
+  """
+    partially update the specified CSINode
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1beta1/csinodes/{name}`
+    """
+  patchStorageV1beta1CSINode(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1beta1_CSINodeResult
+  """
+    partially update the specified StorageClass
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1beta1/storageclasses/{name}`
+    """
+  patchStorageV1beta1StorageClass(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1beta1_StorageClassResult
+  """
+    partially update the specified VolumeAttachment
+    
+    **endpoint:** `PATCH /apis/storage.k8s.io/v1beta1/volumeattachments/{name}`
+    """
+  patchStorageV1beta1VolumeAttachment(  
+    "When present, indicates that modifications should not be persisted. An invalid or unrecognized dryRun directive will result in an error response and no further processing of the request. Valid values are: - All: all dry run stages will be processed"
+    dryRun:String,   
+    "fieldManager is a name associated with the actor or entity that is making these changes. The value must be less than or 128 characters long, and only contain printable characters, as defined by https://golang.org/pkg/unicode/#IsPrint. This field is required for apply requests (application/apply-patch) but optional for non-apply patch types (JsonPatch, MergePatch, StrategicMergePatch)."
+    fieldManager:String,   
+    "Force is going to \"force\" Apply requests. It means user will re-acquire conflicting fields owned by other people. Force flag must be unset for non-apply patch requests."
+    force:Boolean, name:String!
+  ):io_k8s_api_storage_v1beta1_VolumeAttachmentResult
+  """
     replace the specified MutatingWebhookConfiguration
     
     **endpoint:** `PUT /apis/admissionregistration.k8s.io/v1/mutatingwebhookconfigurations/{name}`

@@ -34,7 +34,7 @@ type apiResolver struct {
 
 var _ resolvers.Resolver = &apiResolver{}
 
-func NewResolverFactory(doc *openapi3.Swagger, options Config) (resolvers.Resolver, string, error) {
+func NewResolverFactory(doc *openapi3.T, options Config) (resolvers.Resolver, string, error) {
 	resolver := &apiResolver{options: options}
 	resolver.next = resolvers.DynamicResolverFactory()
 	resolver.resolvers = make(map[string]resolvers.Resolver)

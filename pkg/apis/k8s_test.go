@@ -1,8 +1,11 @@
 package apis_test
 
 import (
+	"fmt"
+	"github.com/pmezard/go-difflib/difflib"
 	"io/ioutil"
 	"log"
+	"reflect"
 	"testing"
 
 	"github.com/chirino/graphql-4-apis/pkg/apis"
@@ -29,5 +32,20 @@ func TestLoadKubernetesAPI(t *testing.T) {
 	require.NoError(t, err)
 	expected := string(file)
 
-	require.Equal(t, actual, expected)
+	AssertEquals(t, expected, actual)
+}
+
+func AssertEquals(t *testing.T, expected interface{}, actual interface{}) {
+	if !reflect.DeepEqual(actual, expected) {
+		diff, _ := difflib.GetUnifiedDiffString(difflib.UnifiedDiff{
+			A:        difflib.SplitLines(fmt.Sprint(expected)),
+			B:        difflib.SplitLines(fmt.Sprint(actual)),
+			FromFile: "Expected",
+			FromDate: "",
+			ToFile:   "Actual",
+			ToDate:   "",
+			Context:  1,
+		})
+		t.Errorf("actual does not match expected, diff:\n%s\n", diff)
+	}
 }
