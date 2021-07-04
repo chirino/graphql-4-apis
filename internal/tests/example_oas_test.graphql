@@ -1,0 +1,403 @@
+"a JSON encoded object"
+scalar JSON
+type Mutation {
+  """
+    Add new contents to the trashcan of a specific owner
+    
+    **endpoint:** `POST /trashcans/{username}`
+    """
+  postOfficeTrashCan(body:JSON!,   
+    "Identifier of a user."
+    username:String!
+  ):trashcanResult
+  """
+    Used to test link parameters with variables
+    
+    **endpoint:** `POST /scanner/{path}`
+    """
+  postScanner(query:String, path:String!):Mutation_PostScanner_DefaultResponseResult
+  """
+    Create a new user in the system.
+    
+    **endpoint:** `POST /users`
+    """
+  postUser(body:userInput!):userResult
+  """
+    Endpoint to test unsanitized parameters and data.
+    
+    **endpoint:** `POST /products`
+    """
+  post_product_with_id(body:product_with_idInput!):product_with_idResult
+  """
+    An endpoint to test authenticated POST requests.
+    
+    **endpoint:** `POST /projects`
+    """
+  post_project_with_id(body:project_with_idInput!):project_with_idResult
+}
+type Mutation_PostScanner_DefaultResponseResult {
+  body:String
+}
+input Mutation_PostUser_body_NomenclatureInput {
+  family:String
+  familyCircular:familyObjectInput
+  genus:String
+  species:String
+  suborder:String
+}
+"An empty result"
+scalar NO_CONTENT
+type Query {
+  """
+    It could be anything!
+    
+    **endpoint:** `GET /mystery`
+    """
+  _mystery:Query__mystery_DefaultResponseResult
+  """
+    Returns all company assets
+    
+    **endpoint:** `GET /assets/{companyId}`
+    """
+  getAllAssets(companyId:String!):[Query_GetAllAssets_DefaultResponseResult]
+  """
+    Returns information about all employee cars
+    
+    **endpoint:** `GET /cars`
+    """
+  getAllCars:[carResult]
+  """
+    Returns the (contents of a) trashcan from a specific office
+    
+    **endpoint:** `GET /trashcans`
+    """
+  getAllTrashCans:[trashcanResult]
+  """
+    Used to test empty responses
+    
+    **endpoint:** `GET /bonuses`
+    """
+  getBonuses:NO_CONTENT
+  """
+    Returns the profile of a company with the given ID.
+    
+    **endpoint:** `GET /companies/{id}`
+    """
+  getCompanyById(id:String!):companyResult
+  """
+    Used to test link parameters with variables
+    
+    **endpoint:** `GET /copier`
+    """
+  getCopier(query:String):Query_GetCopier_DefaultResponseResult
+  """
+    Used to find the nearest coffee machine based on the user's coordinates. Used to test the content field in parameter objects.
+    
+    **endpoint:** `GET /coffeeLocation`
+    """
+  getNearestCoffeeMachine(lat:Float, long:Float):coordinatesResult
+  """
+    Return an office.
+    
+    **endpoint:** `GET /offices/{id}`
+    """
+  getOffice(  
+    "Office ID"
+    id:Int!,   
+    "Describes the format of the return values. By default, the return type is `text/plain` and the return value is the two-letter language code for the identified language, for example, `en` for English or `es` for Spanish. To retrieve a JSON object that contains a ranking of identified languages with confidence scores, set the accept header parameter to `application/json`."
+    accept:String
+  ):officeResult
+  """
+    Returns the (contents of a) trashcan from a specific owner
+    
+    **endpoint:** `GET /trashcans/{username}`
+    """
+  getOfficeTrashCan(  
+    "Identifier of a user."
+    username:String!
+  ):trashcanResult
+  """
+    Return a list of papers. Endpoint to test 2XX status code.
+    
+    **endpoint:** `GET /papers`
+    """
+  getPapers:[paperResult]
+  """
+    Obtain reviews for a product.
+    
+    **endpoint:** `GET /products/{id}/reviews`
+    """
+  getProductReviews(id:String!, product_tag:String!):[Query_GetProductReviews_DefaultResponseResult]
+  """
+    Used to test link parameters with variables
+    
+    **endpoint:** `GET /scanner`
+    """
+  getScanner(query:String):Query_GetScanner_DefaultResponseResult
+  """
+    Returns a user from the system.
+    
+    **endpoint:** `GET /users/{username}`
+    """
+  getUserByUsername(  
+    "Identifier of a user."
+    username:String!
+  ):userResult
+  """
+    Returns a car to test nesting of sub operations
+    
+    **endpoint:** `GET /users/{username}/car`
+    """
+  getUserCar(  
+    "Identifier of a user."
+    username:String!
+  ):carResult
+  """
+    Returns a user's friends to test pagination
+    
+    **endpoint:** `GET /users/{username}/friends`
+    """
+  getUserFriends(  
+    "Identifier of a user."
+    username:String!
+  ):[userResult]
+  """
+    Return a list of users.
+    
+    **endpoint:** `GET /users`
+    """
+  getUsers(  
+    "Limit of the number of users to return."
+    limit:Int!
+  ):[userResult]
+  """
+    An endpoint to test authentication.
+    
+    **endpoint:** `GET /patents/{patent-id}`
+    """
+  get_patent_with_id(patent_id:String!):patent_with_idResult
+  """
+    Another endpoint to test unsanitized parameters and data.
+    
+    **endpoint:** `GET /products/{product-id}`
+    """
+  get_product_with_id(product_id:String!, product_tag:String!):product_with_idResult
+  """
+    Another endpoint to test authentication.
+    
+    **endpoint:** `GET /projects/{project-id}`
+    """
+  get_project_with_id(project_id:Int!):project_with_idResult
+}
+type Query_GetAllAssets_DefaultResponseResult {
+  "The legal address of a user"
+  address:addressResult
+  "The legal address of a user"
+  address2:addressResult
+  brand:JSON
+  "The color of the car."
+  color:String
+  contents:[JSON]
+  "The identifier of the company a user works for"
+  employerId:String
+  features:JSON
+  "The hobbies of this user"
+  hobbies:[String]
+  kind:String
+  "The model of the car."
+  model:String
+  "The legal name of a user"
+  name:String
+  nomenclature:Query_GetAllAssets_DefaultResponse_NomenclatureResult
+  "The rating of the car."
+  rating:Float
+  status:JSON
+  "Arbitrary (string) tags describing an entity."
+  tags:[StringResultProp!]
+}
+type Query_GetAllAssets_DefaultResponse_NomenclatureResult {
+  family:String
+  familyCircular:familyObjectResult
+  genus:String
+  species:String
+  suborder:String
+}
+type Query_GetCopier_DefaultResponseResult {
+  body:String
+}
+type Query_GetProductReviews_DefaultResponseResult {
+  text:String
+  timestamp:Int
+}
+type Query_GetScanner_DefaultResponseResult {
+  body:String
+}
+type Query_GetUserByUsername_DefaultResponse_NomenclatureResult {
+  family:String
+  familyCircular:familyObjectResult
+  genus:String
+  species:String
+  suborder:String
+}
+type Query__mystery_DefaultResponseResult {
+  common_attribute:String
+  different_attribute:String
+}
+"A property entry"
+type StringResultProp {
+  key:String!
+  value:String
+}
+"The legal address of a user"
+input addressInput {
+  "The city a user lives in"
+  city:String
+  "The street a user lives in"
+  street:String
+}
+"The legal address of a user"
+type addressResult {
+  "The city a user lives in"
+  city:String
+  "The street a user lives in"
+  street:String
+}
+"A car"
+type carResult {
+  "The color of the car."
+  color:String
+  features:JSON
+  kind:String
+  "The model of the car."
+  model:String
+  "The rating of the car."
+  rating:Float
+  "Arbitrary (string) tags describing an entity."
+  tags:[StringResultProp!]
+}
+"A company is the employer of many users"
+type companyResult {
+  "The identifier of the user who is CEO of the company"
+  ceoUsername:String
+  "The identifier of a company"
+  id:String
+  "The legal form of a company"
+  legalForm:String
+  "The legal name of a company"
+  name:String
+  "The offices of a company"
+  offices:[addressResult]
+}
+type coordinatesResult {
+  lat:Float
+  long:Float
+}
+input familyObjectInput {
+  family:String
+  familyCircular:familyObjectInput
+}
+type familyObjectResult {
+  family:String
+  familyCircular:familyObjectResult
+}
+"An office"
+type officeResult {
+  "The owner ID of the office"
+  employeeId:String
+  "The identifier of the company a user works for"
+  employerId:String
+  "The room number of the office"
+  room_number:Int
+}
+"A research paper"
+type paperResult {
+  "The name of the paper"
+  name:String
+  "Whether the paper is published"
+  published:Boolean
+}
+"A patent"
+type patent_with_idResult {
+  "The id of the inventor"
+  inventor_id:String
+  "The id of the patent"
+  patent_id:String
+}
+"A product"
+input product_with_idInput {
+  "The id of the product"
+  product_id:String
+  "The name of the product"
+  product_name:String
+  "A tag associated with the product"
+  product_tag:String
+}
+"A product"
+type product_with_idResult {
+  "The id of the product"
+  product_id:String
+  "The name of the product"
+  product_name:String
+  "A tag associated with the product"
+  product_tag:String
+}
+"A project"
+input project_with_idInput {
+  "Whether the project is active"
+  active:Boolean
+  "The id of the lead"
+  lead_id:String
+  "The patent associated with a project if applicable"
+  patentId:String
+  "The id of the project"
+  project_id:Int
+}
+"A project"
+type project_with_idResult {
+  "Whether the project is active"
+  active:Boolean
+  "The id of the lead"
+  lead_id:String
+  "The patent associated with a project if applicable"
+  patentId:String
+  "The id of the project"
+  project_id:Int
+}
+type trashcanResult {
+  brand:JSON
+  contents:[JSON]
+}
+"A user represents a natural person"
+input userInput {
+  "The legal address of a user"
+  address:addressInput
+  "The legal address of a user"
+  address2:addressInput
+  "The identifier of the company a user works for"
+  employerId:String
+  "The hobbies of this user"
+  hobbies:[String]
+  "The legal name of a user"
+  name:String
+  nomenclature:Mutation_PostUser_body_NomenclatureInput
+  status:JSON
+}
+"A user represents a natural person"
+type userResult {
+  "The legal address of a user"
+  address:addressResult
+  "The legal address of a user"
+  address2:addressResult
+  "The identifier of the company a user works for"
+  employerId:String
+  "The hobbies of this user"
+  hobbies:[String]
+  "The legal name of a user"
+  name:String
+  nomenclature:Query_GetUserByUsername_DefaultResponse_NomenclatureResult
+  status:JSON
+}
+schema {
+  mutation: Mutation
+  query: Query
+}

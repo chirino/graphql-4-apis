@@ -434,7 +434,8 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 		}
 		typeName = sanitizeName(typeName)
 
-		if len(sf.Value.Properties) == 0 {
+		// If object has no defined properties...
+		if !hasProperties(sf.Value, map[*openapi3.Schema]bool{}) {
 
 			// We can use a property wrapper if know the type of the values
 			if sf.Value.AdditionalProperties != nil {
@@ -459,6 +460,7 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 				draft.Types["JSON"] = t
 			}
 			return t, nil
+
 		} else {
 			if sf.Value.AdditionalProperties != nil {
 				return nil, errors.New(fmt.Sprintf("cannot support additional prperties on graphql type '%s'", typeName))
@@ -484,7 +486,6 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 				Name: typeName,
 			}
 		}
-
 		// In case a type is recursive.. lets stick it in the cache now before we try to resolve it's fields..
 		draft.Types[typeName] = t
 
@@ -511,31 +512,79 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 
 }
 
+func hasProperties(value *openapi3.Schema, visited map[*openapi3.Schema]bool) bool {
+	if visited[value] {
+		return false
+	}
+	visited[value] = true
+	if len(value.Properties) > 0 {
+		return true
+	}
+	for _, ref := range value.OneOf {
+		if hasProperties(ref.Value, visited) {
+			return true
+		}
+	}
+	for _, ref := range value.AnyOf {
+		if hasProperties(ref.Value, visited) {
+			return true
+		}
+	}
+	for _, ref := range value.AllOf {
+		if hasProperties(ref.Value, visited) {
+			return true
+		}
+	}
+	return false
+}
+
 func (factory apiResolver) addProperties(s *openapi3.Schema, draft *schema.Schema, path string, refCache map[string]interface{}, inputType bool, typeName string, t interface{}) {
 	for _, sf := range s.AllOf {
 		factory.addProperties(sf.Value, draft, path, refCache, inputType, typeName, t)
 	}
+	for _, sf := range s.AnyOf {
+		factory.addProperties(sf.Value, draft, path, refCache, inputType, typeName, t)
+	}
+	for _, sf := range s.OneOf {
+		factory.addProperties(sf.Value, draft, path, refCache, inputType, typeName, t)
+	}
 	for name, ref := range s.Properties {
-
 		fieldType, err := factory.addGraphQLType(draft, ref, path+"/"+capitalizeFirstLetter(name), refCache, inputType)
 		if err != nil {
 			factory.options.Log.Printf("dropping openapi field '%s' from graphql type '%s': %s", name, typeName, err)
 			continue
 		}
+		fieldName := sanitizeName(name)
 		if inputType {
 			object := t.(*schema.InputObject)
-			object.Fields = append(object.Fields, &schema.InputValue{
+			newField := &schema.InputValue{
 				Desc: desc(ref.Value.Description),
-				Name: sanitizeName(name),
+				Name: fieldName,
 				Type: fieldType,
-			})
+			}
+			existingField := object.Fields.Get(fieldName)
+			if existingField != nil {
+				if !reflect.DeepEqual(newField.Type, existingField.Type) {
+					factory.options.Log.Printf("field type conflict '%s.%s'", object.Name, fieldName)
+				}
+			} else {
+				object.Fields = append(object.Fields, newField)
+			}
 		} else {
 			object := t.(*schema.Object)
-			object.Fields = append(object.Fields, &schema.Field{
+			newField := &schema.Field{
 				Desc: desc(ref.Value.Description),
-				Name: sanitizeName(name),
+				Name: fieldName,
 				Type: fieldType,
-			})
+			}
+			existingField := object.Fields.Get(fieldName)
+			if existingField != nil {
+				if !reflect.DeepEqual(newField.Type, existingField.Type) {
+					factory.options.Log.Printf("field type conflict '%s.%s'", object.Name, fieldName)
+				}
+			} else {
+				object.Fields = append(object.Fields, newField)
+			}
 		}
 	}
 }

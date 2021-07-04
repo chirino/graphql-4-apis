@@ -5,6 +5,7 @@ import (
 	"github.com/pmezard/go-difflib/difflib"
 	"io/ioutil"
 	"log"
+	"os"
 	"reflect"
 	"testing"
 
@@ -15,7 +16,7 @@ import (
 func TestLoadKubernetesAPI(t *testing.T) {
 	engine, err := apis.CreateGatewayEngine(apis.Config{
 		Openapi: apis.EndpointOptions{
-			URL: "testdata/k8s.json",
+			URL: "k8s_test.json",
 		},
 		APIBase: apis.EndpointOptions{
 			URL:    "http://fake:8080",
@@ -26,9 +27,11 @@ func TestLoadKubernetesAPI(t *testing.T) {
 	require.NoError(t, err)
 
 	actual := engine.Schema.String()
-	//ioutil.WriteFile("testdata/k8s.graphql", []byte(actual), 0644)
+	if os.ExpandEnv("${GENERATE_TEST_GRAPHQL_FILES}") == "true" {
+		ioutil.WriteFile("k8s_test.graphql", []byte(actual), 0644)
+	}
 
-	file, err := ioutil.ReadFile("testdata/k8s.graphql")
+	file, err := ioutil.ReadFile("k8s_test.graphql")
 	require.NoError(t, err)
 	expected := string(file)
 

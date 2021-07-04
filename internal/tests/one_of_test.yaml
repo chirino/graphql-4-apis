@@ -14,7 +14,7 @@ paths:
               $ref: "#/components/schemas/Animal"
         required: true
       responses:
-        "202":
+        "200":
           content:
             application/json:
               schema:
@@ -23,11 +23,6 @@ paths:
 components:
   schemas:
     Animal:
-      discriminator:
-        propertyName: kind
-        mapping:
-          human: "#/components/schemas/Human"
-          dog: "#/components/schemas/Dog"
       oneOf:
         - $ref: "#/components/schemas/Human"
         - $ref: "#/components/schemas/Dog"
@@ -52,5 +47,5 @@ components:
         kind:
           type: string
         owner:
-          type: integer
+          type: string
 

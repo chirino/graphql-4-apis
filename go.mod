@@ -36,4 +36,4 @@ require (
 
 go 1.13
 
-// replace github.com/chirino/graphql => ../graphql
+replace github.com/chirino/graphql => ../graphql

@@ -1,3 +1,14 @@
+"a JSON encoded object"
+scalar JSON
+input JSONInputProp {
+  key:String!
+  value:JSON
+}
+"A property entry"
+type JSONResultProp {
+  key:String!
+  value:JSON
+}
 type Mutation {
   """
     connect DELETE requests to proxy of Pod
@@ -11286,6 +11297,37 @@ type io_k8s_api_admissionregistration_v1beta1_WebhookClientConfigResult {
 input io_k8s_api_apps_v1_ControllerRevisionInput {
   "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
   apiVersion:String
+  """
+    RawExtension is used to hold extensions in external versions.
+    
+    To use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.
+    
+    // Internal package: type MyAPIObject struct {
+    	runtime.TypeMeta `json:",inline"`
+    	MyPlugin runtime.Object `json:"myPlugin"`
+    } type PluginA struct {
+    	AOption string `json:"aOption"`
+    }
+    
+    // External package: type MyAPIObject struct {
+    	runtime.TypeMeta `json:",inline"`
+    	MyPlugin runtime.RawExtension `json:"myPlugin"`
+    } type PluginA struct {
+    	AOption string `json:"aOption"`
+    }
+    
+    // On the wire, the JSON will look something like this: {
+    	"kind":"MyAPIObject",
+    	"apiVersion":"v1",
+    	"myPlugin": {
+    		"kind":"PluginA",
+    		"aOption":"foo",
+    	},
+    }
+    
+    So what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package's DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)
+    """
+  data:JSON
   "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
   kind:String
   "ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create."
@@ -11308,6 +11350,37 @@ type io_k8s_api_apps_v1_ControllerRevisionListResult {
 type io_k8s_api_apps_v1_ControllerRevisionResult {
   "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
   apiVersion:String
+  """
+    RawExtension is used to hold extensions in external versions.
+    
+    To use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.
+    
+    // Internal package: type MyAPIObject struct {
+    	runtime.TypeMeta `json:",inline"`
+    	MyPlugin runtime.Object `json:"myPlugin"`
+    } type PluginA struct {
+    	AOption string `json:"aOption"`
+    }
+    
+    // External package: type MyAPIObject struct {
+    	runtime.TypeMeta `json:",inline"`
+    	MyPlugin runtime.RawExtension `json:"myPlugin"`
+    } type PluginA struct {
+    	AOption string `json:"aOption"`
+    }
+    
+    // On the wire, the JSON will look something like this: {
+    	"kind":"MyAPIObject",
+    	"apiVersion":"v1",
+    	"myPlugin": {
+    		"kind":"PluginA",
+    		"aOption":"foo",
+    	},
+    }
+    
+    So what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package's DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)
+    """
+  data:JSON
   "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
   kind:String
   "ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create."
@@ -22161,11 +22234,15 @@ type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceSubr
 input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceSubresourcesInput {
   "CustomResourceSubresourceScale defines how to serve the scale subresource for CustomResources."
   scale:io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceSubresourceScaleInput
+  "CustomResourceSubresourceStatus defines how to serve the status subresource for CustomResources. Status is represented by the `.status` JSON path inside of a CustomResource. When set, * exposes a /status subresource for the custom resource * PUT requests to the /status subresource take a custom resource object, and ignore changes to anything except the status stanza * PUT/POST/PATCH requests to the custom resource ignore changes to the status stanza"
+  status:JSON
 }
 "CustomResourceSubresources defines the status and scale subresources for CustomResources."
 type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceSubresourcesResult {
   "CustomResourceSubresourceScale defines how to serve the scale subresource for CustomResources."
   scale:io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceSubresourceScaleResult
+  "CustomResourceSubresourceStatus defines how to serve the status subresource for CustomResources. Status is represented by the `.status` JSON path inside of a CustomResource. When set, * exposes a /status subresource for the custom resource * PUT requests to the /status subresource take a custom resource object, and ignore changes to anything except the status stanza * PUT/POST/PATCH requests to the custom resource ignore changes to the status stanza"
+  status:JSON
 }
 "CustomResourceValidation is a list of validation methods for CustomResources."
 input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_CustomResourceValidationInput {
@@ -22191,10 +22268,20 @@ type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_ExternalDocumentat
 input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsInput {
   _ref:String
   _schema:String
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalItems:JSON
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalProperties:JSON
   allOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsInput]
   anyOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsInput]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  default:JSON
   definitions:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsInputInputProp!]
+  dependencies:[JSONInputProp!]
   description:String
+  enum:[JSON]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  example:JSON
   exclusiveMaximum:Boolean
   exclusiveMinimum:Boolean
   "ExternalDocumentation allows referencing an external resource for extended documentation."
@@ -22206,6 +22293,8 @@ input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsIn
     """
   format:String
   id:String
+  "JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps or an array of JSONSchemaProps. Mainly here for serialization purposes."
+  items:JSON
   maxItems:Int
   maxLength:Int
   maxProperties:Int
@@ -22286,10 +22375,20 @@ input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsIn
 type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsResult {
   _ref:String
   _schema:String
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalItems:JSON
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalProperties:JSON
   allOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsResult]
   anyOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsResult]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  default:JSON
   definitions:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsResultResultProp!]
+  dependencies:[JSONResultProp!]
   description:String
+  enum:[JSON]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  example:JSON
   exclusiveMaximum:Boolean
   exclusiveMinimum:Boolean
   "ExternalDocumentation allows referencing an external resource for extended documentation."
@@ -22301,6 +22400,8 @@ type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1_JSONSchemaPropsRes
     """
   format:String
   id:String
+  "JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps or an array of JSONSchemaProps. Mainly here for serialization purposes."
+  items:JSON
   maxItems:Int
   maxLength:Int
   maxProperties:Int
@@ -22719,11 +22820,15 @@ type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourc
 input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourceSubresourcesInput {
   "CustomResourceSubresourceScale defines how to serve the scale subresource for CustomResources."
   scale:io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourceSubresourceScaleInput
+  "CustomResourceSubresourceStatus defines how to serve the status subresource for CustomResources. Status is represented by the `.status` JSON path inside of a CustomResource. When set, * exposes a /status subresource for the custom resource * PUT requests to the /status subresource take a custom resource object, and ignore changes to anything except the status stanza * PUT/POST/PATCH requests to the custom resource ignore changes to the status stanza"
+  status:JSON
 }
 "CustomResourceSubresources defines the status and scale subresources for CustomResources."
 type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourceSubresourcesResult {
   "CustomResourceSubresourceScale defines how to serve the scale subresource for CustomResources."
   scale:io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourceSubresourceScaleResult
+  "CustomResourceSubresourceStatus defines how to serve the status subresource for CustomResources. Status is represented by the `.status` JSON path inside of a CustomResource. When set, * exposes a /status subresource for the custom resource * PUT requests to the /status subresource take a custom resource object, and ignore changes to anything except the status stanza * PUT/POST/PATCH requests to the custom resource ignore changes to the status stanza"
+  status:JSON
 }
 "CustomResourceValidation is a list of validation methods for CustomResources."
 input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_CustomResourceValidationInput {
@@ -22749,10 +22854,20 @@ type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_ExternalDocum
 input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsInput {
   _ref:String
   _schema:String
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalItems:JSON
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalProperties:JSON
   allOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsInput]
   anyOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsInput]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  default:JSON
   definitions:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsInputInputProp!]
+  dependencies:[JSONInputProp!]
   description:String
+  enum:[JSON]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  example:JSON
   exclusiveMaximum:Boolean
   exclusiveMinimum:Boolean
   "ExternalDocumentation allows referencing an external resource for extended documentation."
@@ -22764,6 +22879,8 @@ input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPr
     """
   format:String
   id:String
+  "JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps or an array of JSONSchemaProps. Mainly here for serialization purposes."
+  items:JSON
   maxItems:Int
   maxLength:Int
   maxProperties:Int
@@ -22844,10 +22961,20 @@ input io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPr
 type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsResult {
   _ref:String
   _schema:String
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalItems:JSON
+  "JSONSchemaPropsOrBool represents JSONSchemaProps or a boolean value. Defaults to true for the boolean property."
+  additionalProperties:JSON
   allOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsResult]
   anyOf:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsResult]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  default:JSON
   definitions:[io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPropsResultResultProp!]
+  dependencies:[JSONResultProp!]
   description:String
+  enum:[JSON]
+  "JSON represents any valid JSON value. These types are supported: bool, int64, float64, string, []interface{}, map[string]interface{} and nil."
+  example:JSON
   exclusiveMaximum:Boolean
   exclusiveMinimum:Boolean
   "ExternalDocumentation allows referencing an external resource for extended documentation."
@@ -22859,6 +22986,8 @@ type io_k8s_apiextensions_apiserver_pkg_apis_apiextensions_v1beta1_JSONSchemaPro
     """
   format:String
   id:String
+  "JSONSchemaPropsOrArray represents a value that can either be a JSONSchemaProps or an array of JSONSchemaProps. Mainly here for serialization purposes."
+  items:JSON
   maxItems:Int
   maxLength:Int
   maxProperties:Int
@@ -23163,6 +23292,14 @@ input io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntryInput {
   apiVersion:String
   "FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: \"FieldsV1\""
   fieldsType:String
+  """
+    FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.
+    
+    Each key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.
+    
+    The exact format is defined in sigs.k8s.io/structured-merge-diff
+    """
+  fieldsV1:JSON
   "Manager is an identifier of the workflow managing these fields."
   manager:String
   "Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'."
@@ -23176,6 +23313,14 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_ManagedFieldsEntryResult {
   apiVersion:String
   "FieldsType is the discriminator for the different fields format and version. There is currently only one possible value: \"FieldsV1\""
   fieldsType:String
+  """
+    FieldsV1 stores a set of fields in a data structure like a Trie, in JSON format.
+    
+    Each key is either a '.' representing the field itself, and will always map to an empty set, or a string representing a sub-field or item. The string will follow one of these four formats: 'f:<name>', where <name> is the name of a field in a struct, or key in a map 'v:<value>', where <value> is the exact json formatted value of a list item 'i:<index>', where <index> is position of a item in a list 'k:<keys>', where <keys> is a map of  a list item's key fields to their unique values If a key maps to an empty Fields value, the field that key represents is part of the set.
+    
+    The exact format is defined in sigs.k8s.io/structured-merge-diff
+    """
+  fieldsV1:JSON
   "Manager is an identifier of the workflow managing these fields."
   manager:String
   "Operation is the type of operation which lead to this ManagedFieldsEntry being created. The only valid values for this field are 'Apply' and 'Update'."
@@ -23399,6 +23544,37 @@ type io_k8s_apimachinery_pkg_apis_meta_v1_StatusResult {
 }
 "Event represents a single event to a watched resource."
 type io_k8s_apimachinery_pkg_apis_meta_v1_WatchEventResult {
+  """
+    RawExtension is used to hold extensions in external versions.
+    
+    To use this, make a field which has RawExtension as its type in your external, versioned struct, and Object in your internal struct. You also need to register your various plugin types.
+    
+    // Internal package: type MyAPIObject struct {
+    	runtime.TypeMeta `json:",inline"`
+    	MyPlugin runtime.Object `json:"myPlugin"`
+    } type PluginA struct {
+    	AOption string `json:"aOption"`
+    }
+    
+    // External package: type MyAPIObject struct {
+    	runtime.TypeMeta `json:",inline"`
+    	MyPlugin runtime.RawExtension `json:"myPlugin"`
+    } type PluginA struct {
+    	AOption string `json:"aOption"`
+    }
+    
+    // On the wire, the JSON will look something like this: {
+    	"kind":"MyAPIObject",
+    	"apiVersion":"v1",
+    	"myPlugin": {
+    		"kind":"PluginA",
+    		"aOption":"foo",
+    	},
+    }
+    
+    So what happens? Decode first uses json or yaml to unmarshal the serialized data into your external MyAPIObject. That causes the raw JSON to be stored, but not unpacked. The next step is to copy (using pkg/conversion) into the internal struct. The runtime package's DefaultScheme has conversion functions installed which will unpack the JSON stored in RawExtension, turning it into the correct object type, and storing it in the Object. (TODO: In the case where the object is of an unknown type, a runtime.Unknown object will be created and stored.)
+    """
+  object:JSON
   type:String
 }
 "Info contains versioning information. how we'll want to distribute that information."

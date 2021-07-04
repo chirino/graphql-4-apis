@@ -22,7 +22,7 @@ func TestExampleOasAPI(t *testing.T) {
 
 	engine, err := apis.CreateGatewayEngine(apis.Config{
 		Openapi: apis.EndpointOptions{
-			URL: "testdata/example_oas.json",
+			URL: "example_oas_test.json",
 		},
 		APIBase: apis.EndpointOptions{
 			URL: "http://localhost:8080/api",
@@ -38,15 +38,17 @@ func TestExampleOasAPI(t *testing.T) {
     `)
 
 	actual := engine.Schema.String()
-	//ioutil.WriteFile("testdata/example_oas.graphql", []byte(actual), 0644)
+	if os.ExpandEnv("${GENERATE_TEST_GRAPHQL_FILES}") == "true" {
+		ioutil.WriteFile("example_oas_test.graphql", []byte(actual), 0644)
+	}
 
-	file, err := ioutil.ReadFile("testdata/example_oas.graphql")
+	file, err := ioutil.ReadFile("example_oas_test.graphql")
 	require.NoError(t, err)
 	expected := string(file)
 
 	require.Equal(t, actual, expected)
 
-	f, err := os.Open("testdata/example_oas_data.json")
+	f, err := os.Open("example_oas_test.json")
 	require.NoError(t, err)
 	data := dom.New()
 	err = json.NewDecoder(f).Decode(&data)

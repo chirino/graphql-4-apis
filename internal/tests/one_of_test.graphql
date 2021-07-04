@@ -1,0 +1,17 @@
+input AnimalInput {
+  address:String
+  kind:String
+  owner:String
+}
+type AnimalResult {
+  address:String
+  kind:String
+  owner:String
+}
+type Mutation {
+  "**endpoint:** `POST /`"
+  example(body:AnimalInput!):AnimalResult
+}
+schema {
+  mutation: Mutation
+}
