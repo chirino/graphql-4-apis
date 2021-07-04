@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -139,6 +140,34 @@ func NewResolverFactory(doc *openapi3.T, options Config) (resolvers.Resolver, st
 		draft.EntryPoints[schema.Query] = draft.Types[options.QueryType]
 	}
 
+	if draft.Types["JSON"] != nil {
+		resolver.inputConverters["JSON"] = func(t schema.Type, value interface{}) (interface{}, error) {
+			switch value := value.(type) {
+			case string:
+				return json.RawMessage(value), nil
+			default:
+				return nil, errors.New("unexpected type found for JSON scalar")
+			}
+		}
+		resolver.resultConverters["JSON"] = func(value reflect.Value, err error) (reflect.Value, error) {
+			// input is an object, convert to a string
+			if err != nil {
+				return value, err
+			}
+			if value.IsNil() {
+				return value, err
+			}
+			m := value.Interface().(map[string]interface{})
+			if m == nil {
+				return value, err
+			}
+			d, err := json.Marshal(m)
+			if err != nil {
+				return value, err
+			}
+			return reflect.ValueOf(string(d)), nil
+		}
+	}
 	err := draft.ResolveTypes()
 	if err != nil {
 		return nil, "", err
@@ -243,7 +272,7 @@ func (factory apiResolver) getOperationResponseType(draft *schema.Schema, operat
 	for statusText, response := range operation.Responses {
 		status, err := strconv.Atoi(statusText)
 		if err != nil {
-			factory.options.Log.Printf("skipping %s.%s field respose, not an integer: %s", rootType, fieldName, statusText)
+			factory.options.Log.Printf("skipping %s.%s field response, not an integer: %s", rootType, fieldName, statusText)
 		}
 		if strings.HasPrefix(statusText, "2") {
 			var qlType schema.Type = nil
@@ -394,18 +423,6 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 
 	default: // Assume it's an object.
 
-		if len(sf.Value.Properties) == 0 && sf.Value.AdditionalProperties != nil {
-			nestedType, err := factory.addGraphQLType(draft, sf.Value.AdditionalProperties, path, refCache, inputType)
-			if err != nil {
-				return nil, err
-			}
-			wrapper, err := factory.addPropWrapper(draft, nestedType, inputType)
-			if err != nil {
-				return nil, err
-			}
-			return &schema.List{OfType: &schema.NonNull{OfType: wrapper}}, nil
-		}
-
 		typeName := path
 		if sf.Ref != "" {
 			typeName = strings.TrimPrefix(sf.Ref, "#/components/schemas/")
@@ -416,6 +433,40 @@ func (factory apiResolver) _addGraphQLType(draft *schema.Schema, sf *openapi3.Sc
 			typeName += "Result"
 		}
 		typeName = sanitizeName(typeName)
+
+		if len(sf.Value.Properties) == 0 {
+
+			// We can use a property wrapper if know the type of the values
+			if sf.Value.AdditionalProperties != nil {
+				nestedType, err := factory.addGraphQLType(draft, sf.Value.AdditionalProperties, path, refCache, inputType)
+				if err != nil {
+					return nil, err
+				}
+				wrapper, err := factory.addPropWrapper(draft, nestedType, inputType)
+				if err != nil {
+					return nil, err
+				}
+				return &schema.List{OfType: &schema.NonNull{OfType: wrapper}}, nil
+			}
+
+			// I think it's safe to assume additional properties are allowed, if the object has no type
+			t, found := draft.Types["JSON"]
+			if !found {
+				t = &schema.Scalar{
+					Name: "JSON",
+					Desc: desc("a JSON encoded object"),
+				}
+				draft.Types["JSON"] = t
+			}
+			return t, nil
+		} else {
+			if sf.Value.AdditionalProperties != nil {
+				return nil, errors.New(fmt.Sprintf("cannot support additional prperties on graphql type '%s'", typeName))
+			}
+			if sf.Value.AdditionalPropertiesAllowed != nil && *sf.Value.AdditionalPropertiesAllowed {
+				return nil, errors.New(fmt.Sprintf("cannot support additional prperties on graphql type '%s'", typeName))
+			}
+		}
 
 		t := draft.Types[typeName]
 		if t != nil {

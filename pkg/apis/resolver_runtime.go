@@ -211,7 +211,6 @@ func (factory apiResolver) resolve(gqlRequest *resolvers.ResolveRequest, operati
 					return reflect.Value{}, errors.WithStack(err)
 				}
 
-				fmt.Println("request body: " + string(data))
 				body = bytes.NewReader(data)
 			}
 		}

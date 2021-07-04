@@ -1,0 +1,9 @@
+"a JSON encoded object"
+scalar JSON
+type Mutation {
+  "**endpoint:** `POST /`"
+  example(body:JSON!):JSON
+}
+schema {
+  mutation: Mutation
+}

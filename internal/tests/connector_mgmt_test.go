@@ -1,6 +1,7 @@
-package apis_test
+package tests_test
 
 import (
+	"bytes"
 	"io/ioutil"
 	"log"
 	"testing"
@@ -9,23 +10,26 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestLoadOpenshiftAPI(t *testing.T) {
+func TestConnectorMgmtAPI(t *testing.T) {
+	messages := bytes.NewBuffer(nil)
 	engine, err := apis.CreateGatewayEngine(apis.Config{
 		Openapi: apis.EndpointOptions{
-			URL: "testdata/openshift.json",
+			URL: "testdata/connector_mgmt.yaml",
 		},
 		APIBase: apis.EndpointOptions{
 			URL:    "http://fake:8080",
 			ApiKey: "fake",
 		},
-		Log: log.New(ioutil.Discard, "", 0),
+		Log: log.New(messages, "", 0),
 	})
 	require.NoError(t, err)
 
 	actual := engine.Schema.String()
-	// ioutil.WriteFile("testdata/openshift.graphql", []byte(actual), 0644)
+	// ioutil.WriteFile("testdata/connector_mgmt.graphql", []byte(actual), 0644)
 
-	file, err := ioutil.ReadFile("testdata/openshift.graphql")
+	AssertEquals(t, "", messages.String())
+
+	file, err := ioutil.ReadFile("testdata/connector_mgmt.graphql")
 	require.NoError(t, err)
 	expected := string(file)
 

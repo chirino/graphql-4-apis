@@ -1,0 +1,56 @@
+openapi: 3.0.0 # need this as first line to allow some IDEs to know this is an openapi document.
+info:
+  title: Test
+  version: 0.0.1
+paths:
+  /:
+    post:
+      summary: Example Operation
+      operationId: example
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Animal"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Animal"
+          description: Accepted
+components:
+  schemas:
+    Animal:
+      discriminator:
+        propertyName: kind
+        mapping:
+          human: "#/components/schemas/Human"
+          dog: "#/components/schemas/Dog"
+      oneOf:
+        - $ref: "#/components/schemas/Human"
+        - $ref: "#/components/schemas/Dog"
+
+    Human:
+      description: "A Dog's best friend"
+      type: object
+      required:
+        - kind
+      properties:
+        kind:
+          type: string
+        address:
+          type: string
+
+    Dog:
+      description: "A Human's best friend"
+      type: object
+      required:
+        - kind
+      properties:
+        kind:
+          type: string
+        owner:
+          type: integer
+
