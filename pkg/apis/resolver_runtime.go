@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"github.com/chirino/graphql/qerrors"
 	"io"
 	"io/ioutil"
 	"net"
@@ -253,7 +254,17 @@ func (factory apiResolver) resolve(gqlRequest *resolvers.ResolveRequest, operati
 		}
 
 		// All other statuses are considered errors...
-		all, _ := ioutil.ReadAll(resp.Body)
-		return reflect.Value{}, errors.Errorf("http request status code: %d, body: %s", resp.StatusCode, string(all))
+		details := map[string]interface{}{}
+		if resp.Header.Get("Content-Type") == "application/json" {
+			err := json.NewDecoder(resp.Body).Decode(&details)
+			if err != nil {
+				return reflect.Value{}, err
+			}
+		} else {
+			all, _ := ioutil.ReadAll(resp.Body)
+			details["body"] = string(all)
+		}
+
+		return reflect.Value{}, qerrors.Errorf("http response status code: %d", resp.StatusCode).WithDetails(details).WithStack()
 	}
 }
