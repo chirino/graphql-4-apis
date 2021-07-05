@@ -254,17 +254,20 @@ func (factory apiResolver) resolve(gqlRequest *resolvers.ResolveRequest, operati
 		}
 
 		// All other statuses are considered errors...
-		details := map[string]interface{}{}
+		extensions := map[string]interface{}{}
+		extensions["status"] = resp.StatusCode
 		if resp.Header.Get("Content-Type") == "application/json" {
-			err := json.NewDecoder(resp.Body).Decode(&details)
+			response := map[string]interface{}{}
+			err := json.NewDecoder(resp.Body).Decode(&response)
 			if err != nil {
 				return reflect.Value{}, err
 			}
+			extensions["response"] = response
 		} else {
 			all, _ := ioutil.ReadAll(resp.Body)
-			details["body"] = string(all)
+			extensions["response"] = string(all)
 		}
 
-		return reflect.Value{}, qerrors.Errorf("http response status code: %d", resp.StatusCode).WithDetails(details).WithStack()
+		return reflect.Value{}, qerrors.Errorf("http response status code: %d", resp.StatusCode).WithExtensions(extensions).WithStack()
 	}
 }
