@@ -1,3 +1,7 @@
+type AddonParameterListResult {
+  id:String
+  value:String
+}
 input ClusterTargetInput {
   cloud_provider:String
   cluster_id:String
@@ -17,22 +21,47 @@ input ConnectorClusterInput {
   href:String
   id:String
   kind:String
-  metadata:Mutation_CreateConnectorCluster_body_MetadataInput
+  metadata:ConnectorClusterMetadataInput
+  status:String
+}
+type ConnectorClusterListItemsMetadataResult {
+  created_at:String
+  name:String
+  owner:String
+  updated_at:String
+}
+type ConnectorClusterListItemsResult {
+  href:String
+  id:String
+  kind:String
+  metadata:ConnectorClusterListItemsMetadataResult
   status:String
 }
 type ConnectorClusterListResult {
-  items:[Query_ListConnectorClusters_DefaultResponse_ItemsResult]
+  items:[ConnectorClusterListItemsResult]
   kind:String
   page:Int
   size:Int
   total:Int
+}
+input ConnectorClusterMetadataInput {
+  created_at:String
+  name:String
+  owner:String
+  updated_at:String
+}
+type ConnectorClusterMetadataResult {
+  created_at:String
+  name:String
+  owner:String
+  updated_at:String
 }
 "Schema for the request to update a data plane cluster's status"
 type ConnectorClusterResult {
   href:String
   id:String
   kind:String
-  metadata:Mutation_CreateConnectorCluster_DefaultResponse_MetadataResult
+  metadata:ConnectorClusterMetadataResult
   status:String
 }
 "A connector holds the configuration to connect a Kafka topic to another system."
@@ -46,15 +75,52 @@ input ConnectorInput {
   id:String
   kafka:KafkaConnectionSettingsInput
   kind:String
-  metadata:Mutation_CreateConnector_body_MetadataInput
+  metadata:ConnectorMetadataInput
+  status:String
+}
+type ConnectorListItemsMetadataResult {
+  created_at:String
+  kafka_id:String
+  name:String
+  owner:String
+  resource_version:Int
+  updated_at:String
+}
+type ConnectorListItemsResult {
+  channel:String
+  connector_spec:JSON
+  connector_type_id:String
+  deployment_location:ClusterTargetResult
+  desired_state:String
+  href:String
+  id:String
+  kafka:KafkaConnectionSettingsResult
+  kind:String
+  metadata:ConnectorListItemsMetadataResult
   status:String
 }
 type ConnectorListResult {
-  items:[Query_ListConnectors_DefaultResponse_ItemsResult]
+  items:[ConnectorListItemsResult]
   kind:String
   page:Int
   size:Int
   total:Int
+}
+input ConnectorMetadataInput {
+  created_at:String
+  kafka_id:String
+  name:String
+  owner:String
+  resource_version:Int
+  updated_at:String
+}
+type ConnectorMetadataResult {
+  created_at:String
+  kafka_id:String
+  name:String
+  owner:String
+  resource_version:Int
+  updated_at:String
 }
 "A connector holds the configuration to connect a Kafka topic to another system."
 type ConnectorResult {
@@ -67,11 +133,30 @@ type ConnectorResult {
   id:String
   kafka:KafkaConnectionSettingsResult
   kind:String
-  metadata:Mutation_CreateConnector_DefaultResponse_MetadataResult
+  metadata:ConnectorMetadataResult
   status:String
 }
+type ConnectorTypeListItemsResult {
+  "Version of the connector type."
+  channels:[String]
+  "A description of the connector."
+  description:String
+  href:String
+  "URL to an icon of the connector."
+  icon_href:String
+  id:String
+  "A json schema that can be used to validate a connectors connector_spec field."
+  json_schema:JSON
+  kind:String
+  "labels used to categorize the connector"
+  labels:[String]
+  "Name of the connector type."
+  name:String
+  "Version of the connector type."
+  version:String
+}
 type ConnectorTypeListResult {
-  items:[Query_ListConnectorTypes_DefaultResponse_ItemsResult]
+  items:[ConnectorTypeListItemsResult]
   kind:String
   page:Int
   size:Int
@@ -118,140 +203,105 @@ type KafkaConnectionSettingsResult {
   client_secret:String
 }
 type Mutation {
-  "**endpoint:** `POST /api/connector_mgmt/v1/kafka_connectors`"
-  createConnector(body:ConnectorInput!,   
+  """
+    Create a new connector
+    
+    **endpoint:** `POST /api/connector_mgmt/v1/kafka_connectors`
+    """
+  createConnector(
+    body:ConnectorInput!,
     "Perform the action in an asynchronous manner"
     async:Boolean!
   ):ConnectorResult
-  "**endpoint:** `POST /api/connector_mgmt/v1/kafka_connector_clusters`"
-  createConnectorCluster(body:ConnectorClusterInput!,   
+  """
+    Create a new connector cluster
+    
+    **endpoint:** `POST /api/connector_mgmt/v1/kafka_connector_clusters`
+    """
+  createConnectorCluster(
+    body:ConnectorClusterInput!,
     "Perform the action in an asynchronous manner"
     async:Boolean!
   ):ConnectorClusterResult
-  "**endpoint:** `DELETE /api/connector_mgmt/v1/kafka_connectors/{id}`"
+  """
+    Delete a connector
+    
+    **endpoint:** `DELETE /api/connector_mgmt/v1/kafka_connectors/{id}`
+    """
   deleteConnector(id:String!):ErrorResult
-  "**endpoint:** `DELETE /api/connector_mgmt/v1/kafka_connector_clusters/{connector_cluster_id}`"
+  """
+    Delete a connector cluster
+    
+    **endpoint:** `DELETE /api/connector_mgmt/v1/kafka_connector_clusters/{connector_cluster_id}`
+    """
   deleteConnectorCluster(connector_cluster_id:String!):ErrorResult
-  "**endpoint:** `PATCH /api/connector_mgmt/v1/kafka_connectors/{id}`"
+  """
+    patch a connector
+    
+    **endpoint:** `PATCH /api/connector_mgmt/v1/kafka_connectors/{id}`
+    """
   patchConnector(id:String!):ConnectorResult
 }
-type Mutation_CreateConnectorCluster_DefaultResponse_MetadataResult {
-  created_at:String
-  name:String
-  owner:String
-  updated_at:String
-}
-input Mutation_CreateConnectorCluster_body_MetadataInput {
-  created_at:String
-  name:String
-  owner:String
-  updated_at:String
-}
-type Mutation_CreateConnector_DefaultResponse_MetadataResult {
-  created_at:String
-  kafka_id:String
-  name:String
-  owner:String
-  resource_version:Int
-  updated_at:String
-}
-input Mutation_CreateConnector_body_MetadataInput {
-  created_at:String
-  kafka_id:String
-  name:String
-  owner:String
-  resource_version:Int
-  updated_at:String
-}
 type Query {
-  "**endpoint:** `GET /api/connector_mgmt/v1/kafka_connectors/{id}`"
+  """
+    Get a connector
+    
+    **endpoint:** `GET /api/connector_mgmt/v1/kafka_connectors/{id}`
+    """
   getConnector(id:String!):ConnectorResult
-  "**endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_clusters/{connector_cluster_id}`"
+  """
+    Get a connector cluster
+    
+    **endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_clusters/{connector_cluster_id}`
+    """
   getConnectorCluster(connector_cluster_id:String!):ConnectorClusterResult
-  "**endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_clusters/{connector_cluster_id}/addon_parameters`"
-  getConnectorClusterAddonParameters(connector_cluster_id:String!):[Query_GetConnectorClusterAddonParameters_DefaultResponseResult]
-  "**endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_types/{connector_type_id}`"
+  """
+    Get a connector cluster's addon parameters
+    
+    **endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_clusters/{connector_cluster_id}/addon_parameters`
+    """
+  getConnectorClusterAddonParameters(connector_cluster_id:String!):[AddonParameterListResult]
+  """
+    Get a connector type by id
+    
+    **endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_types/{connector_type_id}`
+    """
   getConnectorTypeByID(connector_type_id:String!):ConnectorTypeResult
-  "**endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_clusters`"
-  listConnectorClusters(  
+  """
+    Returns a list of connector clusters
+    
+    **endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_clusters`
+    """
+  listConnectorClusters(
     "Page index"
-    page:String,   
+    page:String,
     "Number of items in each page"
     size:String
   ):ConnectorClusterListResult
-  "**endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_types`"
-  listConnectorTypes(  
+  """
+    Returns a list of connector types
+    
+    **endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_types`
+    """
+  listConnectorTypes(
     "Page index"
-    page:String,   
+    page:String,
     "Number of items in each page"
     size:String
   ):ConnectorTypeListResult
-  "**endpoint:** `GET /api/connector_mgmt/v1/kafka_connectors`"
-  listConnectors(  
+  """
+    Returns a list of connector types
+    
+    **endpoint:** `GET /api/connector_mgmt/v1/kafka_connectors`
+    """
+  listConnectors(
     "Page index"
-    page:String,   
+    page:String,
     "Number of items in each page"
-    size:String,   
+    size:String,
     "The kafka cluster id"
     kafka_id:String
   ):ConnectorListResult
-}
-type Query_GetConnectorClusterAddonParameters_DefaultResponseResult {
-  id:String
-  value:String
-}
-type Query_ListConnectorClusters_DefaultResponse_ItemsResult {
-  href:String
-  id:String
-  kind:String
-  metadata:Query_ListConnectorClusters_DefaultResponse_Items_MetadataResult
-  status:String
-}
-type Query_ListConnectorClusters_DefaultResponse_Items_MetadataResult {
-  created_at:String
-  name:String
-  owner:String
-  updated_at:String
-}
-type Query_ListConnectorTypes_DefaultResponse_ItemsResult {
-  "Version of the connector type."
-  channels:[String]
-  "A description of the connector."
-  description:String
-  href:String
-  "URL to an icon of the connector."
-  icon_href:String
-  id:String
-  "A json schema that can be used to validate a connectors connector_spec field."
-  json_schema:JSON
-  kind:String
-  "labels used to categorize the connector"
-  labels:[String]
-  "Name of the connector type."
-  name:String
-  "Version of the connector type."
-  version:String
-}
-type Query_ListConnectors_DefaultResponse_ItemsResult {
-  channel:String
-  connector_spec:JSON
-  connector_type_id:String
-  deployment_location:ClusterTargetResult
-  desired_state:String
-  href:String
-  id:String
-  kafka:KafkaConnectionSettingsResult
-  kind:String
-  metadata:Query_ListConnectors_DefaultResponse_Items_MetadataResult
-  status:String
-}
-type Query_ListConnectors_DefaultResponse_Items_MetadataResult {
-  created_at:String
-  kafka_id:String
-  name:String
-  owner:String
-  resource_version:Int
-  updated_at:String
 }
 schema {
   mutation: Mutation

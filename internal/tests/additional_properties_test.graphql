@@ -1,7 +1,11 @@
 "a JSON encoded object"
 scalar JSON
 type Mutation {
-  "**endpoint:** `POST /`"
+  """
+    Example Operation
+    
+    **endpoint:** `POST /`
+    """
   example(body:JSON!):JSON
 }
 schema {

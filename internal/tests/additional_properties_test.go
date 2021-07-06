@@ -56,7 +56,7 @@ func TestAdditionalProperties(t *testing.T) {
 	actual := engine.Schema.String()
 
 	if os.ExpandEnv("${GENERATE_TEST_GRAPHQL_FILES}") == "true" {
-		ioutil.WriteFile("testdata/additional_properties_test.graphql", []byte(actual), 0644)
+		ioutil.WriteFile("additional_properties_test.graphql", []byte(actual), 0644)
 	}
 	AssertEquals(t, "", messages.String())
 

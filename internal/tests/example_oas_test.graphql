@@ -6,7 +6,8 @@ type Mutation {
     
     **endpoint:** `POST /trashcans/{username}`
     """
-  postOfficeTrashCan(body:JSON!,   
+  postOfficeTrashCan(
+    body:JSON!,
     "Identifier of a user."
     username:String!
   ):trashcanResult
@@ -15,7 +16,7 @@ type Mutation {
     
     **endpoint:** `POST /scanner/{path}`
     """
-  postScanner(query:String, path:String!):Mutation_PostScanner_DefaultResponseResult
+  postScanner(query:String, path:String!):MutationPostScannerResult
   """
     Create a new user in the system.
     
@@ -35,15 +36,8 @@ type Mutation {
     """
   post_project_with_id(body:project_with_idInput!):project_with_idResult
 }
-type Mutation_PostScanner_DefaultResponseResult {
+type MutationPostScannerResult {
   body:String
-}
-input Mutation_PostUser_body_NomenclatureInput {
-  family:String
-  familyCircular:familyObjectInput
-  genus:String
-  species:String
-  suborder:String
 }
 "An empty result"
 scalar NO_CONTENT
@@ -53,13 +47,13 @@ type Query {
     
     **endpoint:** `GET /mystery`
     """
-  _mystery:Query__mystery_DefaultResponseResult
+  _mystery:Query_mysteryResult
   """
     Returns all company assets
     
     **endpoint:** `GET /assets/{companyId}`
     """
-  getAllAssets(companyId:String!):[Query_GetAllAssets_DefaultResponseResult]
+  getAllAssets(companyId:String!):[QueryGetAllAssetsResult]
   """
     Returns information about all employee cars
     
@@ -89,7 +83,7 @@ type Query {
     
     **endpoint:** `GET /copier`
     """
-  getCopier(query:String):Query_GetCopier_DefaultResponseResult
+  getCopier(query:String):QueryGetCopierResult
   """
     Used to find the nearest coffee machine based on the user's coordinates. Used to test the content field in parameter objects.
     
@@ -101,9 +95,9 @@ type Query {
     
     **endpoint:** `GET /offices/{id}`
     """
-  getOffice(  
+  getOffice(
     "Office ID"
-    id:Int!,   
+    id:Int!,
     "Describes the format of the return values. By default, the return type is `text/plain` and the return value is the two-letter language code for the identified language, for example, `en` for English or `es` for Spanish. To retrieve a JSON object that contains a ranking of identified languages with confidence scores, set the accept header parameter to `application/json`."
     accept:String
   ):officeResult
@@ -112,7 +106,7 @@ type Query {
     
     **endpoint:** `GET /trashcans/{username}`
     """
-  getOfficeTrashCan(  
+  getOfficeTrashCan(
     "Identifier of a user."
     username:String!
   ):trashcanResult
@@ -127,19 +121,19 @@ type Query {
     
     **endpoint:** `GET /products/{id}/reviews`
     """
-  getProductReviews(id:String!, product_tag:String!):[Query_GetProductReviews_DefaultResponseResult]
+  getProductReviews(id:String!, product_tag:String!):[QueryGetProductReviewsResult]
   """
     Used to test link parameters with variables
     
     **endpoint:** `GET /scanner`
     """
-  getScanner(query:String):Query_GetScanner_DefaultResponseResult
+  getScanner(query:String):QueryGetScannerResult
   """
     Returns a user from the system.
     
     **endpoint:** `GET /users/{username}`
     """
-  getUserByUsername(  
+  getUserByUsername(
     "Identifier of a user."
     username:String!
   ):userResult
@@ -148,7 +142,7 @@ type Query {
     
     **endpoint:** `GET /users/{username}/car`
     """
-  getUserCar(  
+  getUserCar(
     "Identifier of a user."
     username:String!
   ):carResult
@@ -157,7 +151,7 @@ type Query {
     
     **endpoint:** `GET /users/{username}/friends`
     """
-  getUserFriends(  
+  getUserFriends(
     "Identifier of a user."
     username:String!
   ):[userResult]
@@ -166,7 +160,7 @@ type Query {
     
     **endpoint:** `GET /users`
     """
-  getUsers(  
+  getUsers(
     "Limit of the number of users to return."
     limit:Int!
   ):[userResult]
@@ -189,7 +183,14 @@ type Query {
     """
   get_project_with_id(project_id:Int!):project_with_idResult
 }
-type Query_GetAllAssets_DefaultResponseResult {
+type QueryGetAllAssetsNomenclatureResult {
+  family:String
+  familyCircular:familyObjectResult
+  genus:String
+  species:String
+  suborder:String
+}
+type QueryGetAllAssetsResult {
   "The legal address of a user"
   address:addressResult
   "The legal address of a user"
@@ -208,38 +209,24 @@ type Query_GetAllAssets_DefaultResponseResult {
   model:String
   "The legal name of a user"
   name:String
-  nomenclature:Query_GetAllAssets_DefaultResponse_NomenclatureResult
+  nomenclature:QueryGetAllAssetsNomenclatureResult
   "The rating of the car."
   rating:Float
   status:JSON
   "Arbitrary (string) tags describing an entity."
   tags:[StringResultProp!]
 }
-type Query_GetAllAssets_DefaultResponse_NomenclatureResult {
-  family:String
-  familyCircular:familyObjectResult
-  genus:String
-  species:String
-  suborder:String
-}
-type Query_GetCopier_DefaultResponseResult {
+type QueryGetCopierResult {
   body:String
 }
-type Query_GetProductReviews_DefaultResponseResult {
+type QueryGetProductReviewsResult {
   text:String
   timestamp:Int
 }
-type Query_GetScanner_DefaultResponseResult {
+type QueryGetScannerResult {
   body:String
 }
-type Query_GetUserByUsername_DefaultResponse_NomenclatureResult {
-  family:String
-  familyCircular:familyObjectResult
-  genus:String
-  species:String
-  suborder:String
-}
-type Query__mystery_DefaultResponseResult {
+type Query_mysteryResult {
   common_attribute:String
   different_attribute:String
 }
@@ -379,8 +366,22 @@ input userInput {
   hobbies:[String]
   "The legal name of a user"
   name:String
-  nomenclature:Mutation_PostUser_body_NomenclatureInput
+  nomenclature:userNomenclatureInput
   status:JSON
+}
+input userNomenclatureInput {
+  family:String
+  familyCircular:familyObjectInput
+  genus:String
+  species:String
+  suborder:String
+}
+type userNomenclatureResult {
+  family:String
+  familyCircular:familyObjectResult
+  genus:String
+  species:String
+  suborder:String
 }
 "A user represents a natural person"
 type userResult {
@@ -394,7 +395,7 @@ type userResult {
   hobbies:[String]
   "The legal name of a user"
   name:String
-  nomenclature:Query_GetUserByUsername_DefaultResponse_NomenclatureResult
+  nomenclature:userNomenclatureResult
   status:JSON
 }
 schema {

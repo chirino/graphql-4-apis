@@ -9,7 +9,11 @@ type AnimalResult {
   owner:String
 }
 type Mutation {
-  "**endpoint:** `POST /`"
+  """
+    Example Operation
+    
+    **endpoint:** `POST /`
+    """
   example(body:AnimalInput!):AnimalResult
 }
 schema {
