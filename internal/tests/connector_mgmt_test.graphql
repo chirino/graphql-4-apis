@@ -1,4 +1,5 @@
-type AddonParameterListResult {
+"A addon parameter"
+type AddonParameterResult {
   id:String
   value:String
 }
@@ -24,21 +25,8 @@ input ConnectorClusterInput {
   metadata:ConnectorClusterMetadataInput
   status:String
 }
-type ConnectorClusterListItemsMetadataResult {
-  created_at:String
-  name:String
-  owner:String
-  updated_at:String
-}
-type ConnectorClusterListItemsResult {
-  href:String
-  id:String
-  kind:String
-  metadata:ConnectorClusterListItemsMetadataResult
-  status:String
-}
 type ConnectorClusterListResult {
-  items:[ConnectorClusterListItemsResult]
+  items:[ConnectorClusterResult]
   kind:String
   page:Int
   size:Int
@@ -78,29 +66,8 @@ input ConnectorInput {
   metadata:ConnectorMetadataInput
   status:String
 }
-type ConnectorListItemsMetadataResult {
-  created_at:String
-  kafka_id:String
-  name:String
-  owner:String
-  resource_version:Int
-  updated_at:String
-}
-type ConnectorListItemsResult {
-  channel:String
-  connector_spec:JSON
-  connector_type_id:String
-  deployment_location:ClusterTargetResult
-  desired_state:String
-  href:String
-  id:String
-  kafka:KafkaConnectionSettingsResult
-  kind:String
-  metadata:ConnectorListItemsMetadataResult
-  status:String
-}
 type ConnectorListResult {
-  items:[ConnectorListItemsResult]
+  items:[ConnectorResult]
   kind:String
   page:Int
   size:Int
@@ -136,27 +103,8 @@ type ConnectorResult {
   metadata:ConnectorMetadataResult
   status:String
 }
-type ConnectorTypeListItemsResult {
-  "Version of the connector type."
-  channels:[String]
-  "A description of the connector."
-  description:String
-  href:String
-  "URL to an icon of the connector."
-  icon_href:String
-  id:String
-  "A json schema that can be used to validate a connectors connector_spec field."
-  json_schema:JSON
-  kind:String
-  "labels used to categorize the connector"
-  labels:[String]
-  "Name of the connector type."
-  name:String
-  "Version of the connector type."
-  version:String
-}
 type ConnectorTypeListResult {
-  items:[ConnectorTypeListItemsResult]
+  items:[ConnectorTypeResult]
   kind:String
   page:Int
   size:Int
@@ -240,7 +188,7 @@ type Mutation {
     
     **endpoint:** `PATCH /api/connector_mgmt/v1/kafka_connectors/{id}`
     """
-  patchConnector(id:String!):ConnectorResult
+  patchConnector(body:ConnectorInput!, id:String!):ConnectorResult
 }
 type Query {
   """
@@ -260,7 +208,7 @@ type Query {
     
     **endpoint:** `GET /api/connector_mgmt/v1/kafka_connector_clusters/{connector_cluster_id}/addon_parameters`
     """
-  getConnectorClusterAddonParameters(connector_cluster_id:String!):[AddonParameterListResult]
+  getConnectorClusterAddonParameters(connector_cluster_id:String!):[AddonParameterResult]
   """
     Get a connector type by id
     
