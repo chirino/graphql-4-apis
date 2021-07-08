@@ -11,6 +11,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/spf13/cobra v1.2.1
+	github.com/spyzhov/ajson v0.4.2 // indirect
 	github.com/stretchr/testify v1.7.0
 )
 

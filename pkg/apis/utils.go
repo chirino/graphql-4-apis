@@ -76,3 +76,7 @@ func renderTemplate(variables interface{}, templateText string) (string, error) 
 	result := buf.String()
 	return result, nil
 }
+
+func desc(text string) schema.Description {
+	return schema.NewDescription(strings.TrimSpace(text))
+}

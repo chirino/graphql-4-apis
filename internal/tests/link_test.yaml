@@ -1,0 +1,54 @@
+openapi: 3.0.0 # need this as first line to allow some IDEs to know this is an openapi document.
+info:
+  title: Test
+  version: 0.0.1
+paths:
+  /animals/{animal_id}:
+    get:
+      summary: Get an Anigaml
+      operationId: getAnimalByID
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Animal"
+          description: OK
+
+  /animal_types/{animal_type_id}:
+    get:
+      summary: Get an animal type by id
+      operationId: getAnimalTypeByID
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnimalType"
+          description: OK
+
+components:
+  schemas:
+
+    AnimalType:
+      properties:
+        id:
+          type: string
+        species:
+          type: string
+
+    Animal:
+      properties:
+        id:
+          type: string
+        animal_type_id:
+          type: string
+        name:
+          type: string
+      x-links:
+        animal_type:
+          operationId: getAnimalTypeByID
+          parameters:
+            animal_type_id: 'animal_type_id'
+          description: >
+            gets the associated animal type.

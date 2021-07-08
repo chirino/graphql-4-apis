@@ -1,0 +1,28 @@
+type AnimalResult {
+  "gets the associated animal type."
+  animal_type:AnimalTypeResult
+  animal_type_id:String
+  id:String
+  name:String
+}
+type AnimalTypeResult {
+  id:String
+  species:String
+}
+type Query {
+  """
+    Get an Anigaml
+    
+    **endpoint:** `GET /animals/{animal_id}`
+    """
+  getAnimalByID(animal_id:String!):AnimalResult
+  """
+    Get an animal type by id
+    
+    **endpoint:** `GET /animal_types/{animal_type_id}`
+    """
+  getAnimalTypeByID(animal_type_id:String!):AnimalTypeResult
+}
+schema {
+  query: Query
+}
