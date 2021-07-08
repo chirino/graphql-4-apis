@@ -1,7 +1,9 @@
 package apis
 
 import (
+	"context"
 	errors "errors"
+	"github.com/chirino/graphql/schema"
 	"net/http"
 	"os"
 
@@ -73,13 +75,18 @@ func CreateGatewayEngine(option Config) (*graphql.Engine, error) {
 		return nil, errors.New("api base URL is not configured")
 	}
 
-	resolver, schema, err := NewResolverFactory(doc, o)
+	resolver, schemaText, err := NewResolverFactory(doc, o)
 	if err != nil {
 		return nil, err
 	}
-	err = engine.Schema.Parse(schema)
+	err = engine.Schema.Parse(schemaText)
 	if err != nil {
 		return nil, err
+	}
+
+	engine.OnRequestHook = func(r *graphql.Request, doc *schema.QueryDocument, op *schema.Operation) error {
+		r.Context = context.WithValue(r.GetContext(), DataLoadersKey, dataLoaders{})
+		return nil
 	}
 
 	engine.Resolver = resolvers.List(resolver, engine.Resolver)

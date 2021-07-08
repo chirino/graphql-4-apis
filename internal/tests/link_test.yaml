@@ -3,6 +3,29 @@ info:
   title: Test
   version: 0.0.1
 paths:
+  /animals:
+    get:
+      summary: Get all Animal IDs
+      operationId: getAnimalIds
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: string
+                  x-links:
+                    animal:
+                      operationId: getAnimalByID
+                      parameters:
+                        animal_id: 'id'
+                      description: >
+                        gets the associated animal.
+
+          description: OK
   /animals/{animal_id}:
     get:
       summary: Get an Anigaml

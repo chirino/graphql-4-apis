@@ -118,6 +118,10 @@ func proxyHeaders(to http.Header, from *http.Request) {
 	}
 }
 
+type DataLoadersKeyType string
+
+const DataLoadersKey = DataLoadersKeyType("DataLoadersKey")
+
 func (resolver *resolver) createLinkResolver(operation *openapi3.Operation, status []int, params map[string]string) resolvers.Func {
 	return func(request *resolvers.ResolveRequest, next resolvers.Resolution) resolvers.Resolution {
 
@@ -127,12 +131,33 @@ func (resolver *resolver) createLinkResolver(operation *openapi3.Operation, stat
 			value, err := navigateMap(request.Parent.Interface(), keys)
 			if err != nil {
 				return func() (reflect.Value, error) {
-					return reflect.Value{}, err
+					return reflect.Value{}, errors.Wrapf(err, "could not get link argument at path: %s", path)
 				}
 			}
 			request.Args[k] = fmt.Sprint(value)
 		}
-		return resolver.resolve(request, operation, status)
+
+		dataLoaders := request.Context.Value(DataLoadersKey).(dataLoaders)
+		marshaledArgs, err := json.Marshal(request.Args)
+		if err != nil {
+			return func() (reflect.Value, error) {
+				return reflect.Value{}, errors.Wrapf(err, "could not create dataloader cache key")
+			}
+		}
+		loadKey := loadKey{
+			path:   operation.Extensions["path"].(string),
+			method: operation.Extensions["method"].(string),
+			args:   string(marshaledArgs),
+		}
+
+		loader := dataLoaders[loadKey]
+		if loader == nil {
+			loader = &CachedResolution{
+				apply: resolver.resolve(request, operation, status),
+			}
+			dataLoaders[loadKey] = loader
+		}
+		return loader.resolution
 	}
 }
 
@@ -141,12 +166,12 @@ func navigateMap(value interface{}, keys []string) (interface{}, error) {
 	current = resolvers.Dereference(current)
 
 	for _, key := range keys {
-
 		if current.Kind() != reflect.Map || current.Type().Key().Kind() != reflect.String {
 			return nil, errors.New("can only navigate string keyed maps")
 		}
 		current = current.MapIndex(reflect.ValueOf(key))
 	}
+
 	return current.Interface(), nil
 }
 

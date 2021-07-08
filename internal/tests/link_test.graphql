@@ -17,11 +17,22 @@ type Query {
     """
   getAnimalByID(animal_id:String!):AnimalResult
   """
+    Get all Animal IDs
+    
+    **endpoint:** `GET /animals`
+    """
+  getAnimalIds:[QueryGetAnimalIdsResult]
+  """
     Get an animal type by id
     
     **endpoint:** `GET /animal_types/{animal_type_id}`
     """
   getAnimalTypeByID(animal_type_id:String!):AnimalTypeResult
+}
+type QueryGetAnimalIdsResult {
+  "gets the associated animal."
+  animal:AnimalResult
+  id:String
 }
 schema {
   query: Query
